@@ -2,6 +2,9 @@ const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
+const handleDisconnect = require("./events/disconnect.js");
+const handleCreateGame = require("./events/createGame.js");
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -9,12 +12,10 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`A client connected (${socket.id}).`);
+  socket.on("create-game", (arg) => handleCreateGame(io, socket, arg));
+  socket.on("disconnect", (reason) => handleDisconnect(io, socket, reason));
 
-  socket.on("disconnect", (reason) => {
-    console.log(`A client disconnected (${socket.id}).`);
-    console.log(`    Reason: ${reason}`)
-  });
+  console.log(`Client '${socket.id}' connected.`);
 });
 
 const port = 3000;
