@@ -6,16 +6,19 @@
     <p>Enter the game code:</p>
     <input v-model="gameCode" type="text" style="text-transform: uppercase;">
     <p v-if="errorMsg" style="color: red;">{{errorMsg}}</p>
+    <QuartoFooter />
   </div>
 </template>
 
 <script>
 import QuartoHeader from "./QuartoHeader.vue";
+import QuartoFooter from "./QuartoFooter.vue";
 
 export default {
   name: "Home",
   components: {
-    QuartoHeader
+    QuartoHeader,
+    QuartoFooter
   },
   data() {
     return {

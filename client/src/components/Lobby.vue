@@ -4,17 +4,20 @@
     <p>Your game code is</p>
     <h1><strong>{{ gameCode }}</strong></h1>
     <p>Share it with a friend to start playing.</p>
+    <QuartoFooter />
   </div>
 </template>
 
 <script>
 import QuartoHeader from "./QuartoHeader.vue";
+import QuartoFooter from "./QuartoFooter.vue";
 
 export default {
   name: "Lobby",
   components: {
-    QuartoHeader
-  },
+    QuartoHeader,
+    QuartoFooter
+},
   props: [
     "gameCode"
   ],
