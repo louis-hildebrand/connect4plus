@@ -17,6 +17,17 @@ export default {
   },
   props: [
     "gameCode"
-  ]
+  ],
+  created() {
+    this.registerSocketListeners();
+  },
+  methods: {
+    registerSocketListeners() {
+      this.$root.socket.on("game-started", this.handleGameStarted);
+    },
+    handleGameStarted() {
+      this.$router.push({ name: "Game" });
+    }
+  }
 };
 </script>

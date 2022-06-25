@@ -1,6 +1,7 @@
 <template>
   <div>
     <QuartoHeader />
+    <p>Here is where the Quarto game will take place.</p>
   </div>
 </template>
 
