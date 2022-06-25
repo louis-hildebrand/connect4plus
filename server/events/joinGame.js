@@ -3,7 +3,7 @@ function handleJoinGame(io, socket, arg) {
 
   // Check that the room exists
   const existingRooms = io.sockets.adapter.rooms;
-  const roomMembers = existingRooms[gameCode];
+  const roomMembers = existingRooms.get(gameCode);
   if (roomMembers === undefined) {
     io.to(socket.id).emit("game-not-found");
     console.log(`Client '${socket.id}' attempted to join game '${gameCode}', but no matching room was found.`);
