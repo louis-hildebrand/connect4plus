@@ -10,7 +10,7 @@ function randomString(chars, len) {
 function newGameCode(disallowed) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   while (true) {
-    const gameCode = randomString(chars, 3) + " " + randomString(chars, 3);
+    const gameCode = randomString(chars, 6);
     if (!disallowed.some((x) => x === gameCode)) {
       return gameCode;
     }
