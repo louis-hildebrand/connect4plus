@@ -5,7 +5,8 @@
 <script>
 import { io } from "socket.io-client";
 
-const backendUrl = "ws://localhost:3000/";
+//const backendUrl = "ws://localhost:3000/";
+const backendUrl = "https://connect4plus-backend.herokuapp.com/";
 
 export default {
   name: "App",
