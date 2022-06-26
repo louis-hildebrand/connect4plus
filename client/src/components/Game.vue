@@ -19,9 +19,7 @@
         </div>
       </div>
     </div>
-    <div class="footer">
-      <QuartoFooter />
-    </div>
+    <QuartoFooter />
   </body>
 </template>
 
@@ -92,10 +90,9 @@ export default {
 </script>
 
 <style scoped>
-html, body {
-  height: 100%;
-  background-color: lightgray;
-  margin: 0;
+footer {
+  height: 50px;
+  text-align: center;
 }
 .game-header {
   display: flex;
@@ -121,21 +118,21 @@ html, body {
 .grid {
   display: grid;
   grid-template-columns: auto auto auto auto;
-  gap: 5px;
-  padding: 5px;
-  margin: auto auto auto auto;
+  gap: 0.3rem;
+  padding: 0.3rem;
+  margin: auto;
   background-color: darkslategrey;
 }
 .cell, .single-cell {
   width: 7rem;
   height: 7rem;
   padding: 0px;
-  margin: auto auto auto auto;
+  margin: auto;
   background-color: white;
 }
 .single-cell {
   border-style: solid;
-  border-width: 5px;
+  border-width: 0.3rem;
   border-color: darkslategrey;
 }
 img {
