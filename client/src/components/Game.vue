@@ -38,6 +38,8 @@ export default {
   ],
   data() {
     return {
+      gameOverWin: false,
+      gameOverTie: false,
       currentPlayer: 1,
       placingPiece: false,
       playingBoard: [
@@ -80,17 +82,30 @@ export default {
     };
   },
   computed: {
+    gameOver() {
+      return this.gameOverWin || this.gameOverTie;
+    },
     msg() {
-      if (this.myNumber * 1 === this.currentPlayer && this.placingPiece) {
+      const myNumber = this.myNumber * 1;
+      if (this.gameOverWin && myNumber === this.currentPlayer) {
+        return "Game over. You win!";
+      }
+      else if (this.gameOverWin && myNumber !== this.currentPlayer) {
+        return "Game over. You lose.";
+      }
+      else if (this.gameOverTie) {
+        return "Game over. Tie.";
+      }
+      if (myNumber === this.currentPlayer && this.placingPiece) {
         return "Choose where to place the piece";
       }
-      else if (this.myNumber * 1 === this.currentPlayer && !this.placingPiece) {
+      else if (myNumber === this.currentPlayer && !this.placingPiece) {
         return "Choose a piece for your opponent";
       }
-      else if (this.myNumber * 1 !== this.currentPlayer && this.placingPiece) {
+      else if (myNumber !== this.currentPlayer && this.placingPiece) {
         return "Your opponent is choosing where to place the piece";
       }
-      else if (this.myNumber * 1 !== this.currentPlayer && !this.placingPiece) {
+      else if (myNumber !== this.currentPlayer && !this.placingPiece) {
         return "Your opponent is choosing a piece for you";
       }
       else {
@@ -118,23 +133,18 @@ export default {
       return require("@/assets/" + name);
     },
     playerNameStyle(player) {
-      if (player === 1) {
-        return "";
-      }
-      else if (player === 2) {
+      if (player === this.currentPlayer) {
         return "background-color: slategrey;";
+      }
+      else {
+        return "";
       }
     },
     choosePiece(index) {
-      if (this.myNumber * 1 !== this.currentPlayer) {
-        return;
-      }
-      if (this.placingPiece) {
-        return;
-      }
-      if (!this.availablePieces[index]) {
-        return;
-      }
+      if (this.gameOver) return;
+      if (this.myNumber * 1 !== this.currentPlayer) return;
+      if (this.placingPiece) return;
+      if (!this.availablePieces[index]) return;
 
       this.$root.socket.emit("choose-piece", {gameCode: this.gameCode, piece: index});
 
@@ -144,18 +154,13 @@ export default {
       this.selectedPiece = this.availablePieces[index];
       this.availablePieces[index] = null;
 
-      this.advanceRound();
+      this.advanceGameState();
     },
     placePiece(index) {
-      if (this.myNumber * 1 !== this.currentPlayer) {
-        return;
-      }
-      if (!this.placingPiece) {
-        return;
-      }
-      if (this.playingBoard[index]) {
-        return;
-      }
+      if (this.gameOver) return;
+      if (this.myNumber * 1 !== this.currentPlayer) return;
+      if (!this.placingPiece) return;
+      if (this.playingBoard[index]) return;
 
       this.$root.socket.emit("place-piece", {gameCode: this.gameCode, piece: index});
 
@@ -165,14 +170,79 @@ export default {
       this.playingBoard[index] = this.selectedPiece;
       this.selectedPiece = null;
 
-      this.advanceRound();
+      this.advanceGameState();
     },
-    advanceRound() {
+    advanceGameState() {
+      const winningIndices = this.isWin();
+      if (winningIndices) {
+        this.win(winningIndices);
+        return;
+      }
+      else if (this.isTie()) {
+        this.tie();
+        return;
+      }
+
       this.currentPlayer = this.placingPiece
         ? this.currentPlayer
         : (this.currentPlayer % 2) + 1;
 
       this.placingPiece = !this.placingPiece;
+    },
+    win(winningIndices) {
+      console.log(`Win detected: ${winningIndices}`);
+      this.gameOverWin = true;
+    },
+    tie() {
+      console.log("Tie detected");
+      this.gameOverTie = true;
+    },
+    isWin() {
+      const winningIndices =
+        // Horizontal
+        this.haveCommonCharacteristics(0, 1, 2, 3)
+        || this.haveCommonCharacteristics(4, 5, 6, 7)
+        || this.haveCommonCharacteristics(8, 9, 10, 11)
+        || this.haveCommonCharacteristics(12, 13, 14, 15)
+        // Vertical
+        || this.haveCommonCharacteristics(0, 4, 8, 12)
+        || this.haveCommonCharacteristics(1, 5, 9, 13)
+        || this.haveCommonCharacteristics(2, 6, 10, 14)
+        || this.haveCommonCharacteristics(3, 7, 11, 15)
+        // Diagonal
+        || this.haveCommonCharacteristics(0, 5, 10, 15)
+        || this.haveCommonCharacteristics(3, 6, 9, 12);
+      return winningIndices;
+    },
+    haveCommonCharacteristics(idx0, idx1, idx2, idx3) {
+      const pieces = [
+        this.playingBoard[idx0],
+        this.playingBoard[idx1],
+        this.playingBoard[idx2],
+        this.playingBoard[idx3],
+      ];
+      if (pieces.some((x) => !x)) {
+        return false;
+      }
+      
+      const common = {
+        color: pieces[0].color,
+        shape: pieces[0].shape,
+        mark: pieces[0].mark,
+        border: pieces[0].border
+      };
+      for (var i = 1; i < 4; i++) {
+        if (pieces[i].color !== common.color) common.color = false;
+        if (pieces[i].shape !== common.shape) common.shape = false;
+        if (pieces[i].mark !== common.mark) common.mark = false;
+        if (pieces[i].border !== common.border) common.border = false;
+      }
+
+      const haveCommonCharacteristics = common.color || common.shape || common.mark || common.border;
+      return haveCommonCharacteristics ? [idx0, idx1, idx2, idx3] : false;
+    },
+    isTie() {
+      return this.playingBoard.every((x) => x);
     }
   }
 }
