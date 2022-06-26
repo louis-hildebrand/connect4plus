@@ -1,1 +1,1 @@
-web: npm install --production && node .
+web: ls && node server/index.js
