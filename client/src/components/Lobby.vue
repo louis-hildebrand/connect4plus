@@ -26,7 +26,7 @@ export default {
       this.$root.socket.on("game-started", this.handleGameStarted);
     },
     handleGameStarted() {
-      this.$router.push({ name: "Game" });
+      this.$router.push({ name: "Game", params: {gameCode: this.gameCode, myNumber: 1} });
     }
   }
 };

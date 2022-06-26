@@ -54,7 +54,7 @@ export default {
       this.errorMsg = "There is no game with that code."
     },
     handleGameStarted(arg) {
-      this.$router.push({ name: "Game" });
+      this.$router.push({ name: "Game", params: {gameCode: this.gameCode, myNumber: 2} });
     },
     createGame() {
       console.log("Creating a new game.");

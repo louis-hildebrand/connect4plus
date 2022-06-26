@@ -7,15 +7,15 @@
     <h5 class="msg">{{ msg }}</h5>
     <div class="game-content">
       <div class="grid">
-        <div class="cell" v-for="(path, index) in playingBoard" :key="index">
-          <img v-if="path" src="@/assets/light-square-x-thick.png" />
+        <div class="cell" v-for="(piece, index) in playingBoard" :key="index" @click="placePiece(index)">
+          <img v-if="piece" :src="getImg(piece)" />
         </div>
       </div>
       <div class="single-cell">
         <img v-if="selectedPiece" :src="getImg(selectedPiece)" />
       </div>
       <div class="grid">
-        <div class="cell" v-for="(piece, index) in availablePieces" :key="index">
+        <div class="cell" v-for="(piece, index) in availablePieces" :key="index" @click="choosePiece(index)">
           <img v-if="piece" :src="getImg(piece)" />
         </div>
       </div>
@@ -32,9 +32,14 @@ export default {
   components: {
     QuartoFooter
   },
+  props: [
+    "gameCode",
+    "myNumber"
+  ],
   data() {
     return {
-      msg: "Choose a piece for your opponent to place",
+      currentPlayer: 1,
+      placingPiece: false,
       playingBoard: [
         null,
         null,
@@ -74,7 +79,40 @@ export default {
       selectedPiece: null
     };
   },
+  computed: {
+    msg() {
+      if (this.myNumber * 1 === this.currentPlayer && this.placingPiece) {
+        return "Choose where to place the piece";
+      }
+      else if (this.myNumber * 1 === this.currentPlayer && !this.placingPiece) {
+        return "Choose a piece for your opponent";
+      }
+      else if (this.myNumber * 1 !== this.currentPlayer && this.placingPiece) {
+        return "Your opponent is choosing where to place the piece";
+      }
+      else if (this.myNumber * 1 !== this.currentPlayer && !this.placingPiece) {
+        return "Your opponent is choosing a piece for you";
+      }
+      else {
+        return "Invalid state. Please refresh the page.";
+      }
+    }
+  },
+  created() {
+    this.registerSocketListeners();
+  },
+  unmounted() {
+    this.removeSocketListeners();
+  },
   methods: {
+    registerSocketListeners() {
+      this.$root.socket.on("piece-chosen", this.handlePieceChosen);
+      this.$root.socket.on("piece-placed", this.handlePiecePlaced);
+    },
+    removeSocketListeners() {
+      this.$root.socket.off("piece-chosen", this.handlePieceChosen);
+      this.$root.socket.off("piece-placed", this.handlePiecePlaced);
+    },
     getImg(piece) {
       const name = piece.color + "-" + piece.shape + "-" + piece.mark + "-" + piece.border + ".png";
       return require("@/assets/" + name);
@@ -86,6 +124,55 @@ export default {
       else if (player === 2) {
         return "background-color: slategrey;";
       }
+    },
+    choosePiece(index) {
+      if (this.myNumber * 1 !== this.currentPlayer) {
+        return;
+      }
+      if (this.placingPiece) {
+        return;
+      }
+      if (!this.availablePieces[index]) {
+        return;
+      }
+
+      this.$root.socket.emit("choose-piece", {gameCode: this.gameCode, piece: index});
+
+      this.handlePieceChosen(index);
+    },
+    handlePieceChosen(index) {
+      this.selectedPiece = this.availablePieces[index];
+      this.availablePieces[index] = null;
+
+      this.advanceRound();
+    },
+    placePiece(index) {
+      if (this.myNumber * 1 !== this.currentPlayer) {
+        return;
+      }
+      if (!this.placingPiece) {
+        return;
+      }
+      if (this.playingBoard[index]) {
+        return;
+      }
+
+      this.$root.socket.emit("place-piece", {gameCode: this.gameCode, piece: index});
+
+      this.handlePiecePlaced(index);
+    },
+    handlePiecePlaced(index) {
+      this.playingBoard[index] = this.selectedPiece;
+      this.selectedPiece = null;
+
+      this.advanceRound();
+    },
+    advanceRound() {
+      this.currentPlayer = this.placingPiece
+        ? this.currentPlayer
+        : (this.currentPlayer % 2) + 1;
+
+      this.placingPiece = !this.placingPiece;
     }
   }
 }

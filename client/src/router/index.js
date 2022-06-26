@@ -18,7 +18,8 @@ const routes = [
   {
     path: "/play",
     name: "Game",
-    component: Game
+    component: Game,
+    props: true
   }
 ];
 
