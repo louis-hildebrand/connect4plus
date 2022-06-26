@@ -15,10 +15,7 @@ export default {
 <style scoped>
 .footer {
   text-align: left;
-  align-items: center;
-  background-color: darkslategrey;
-  color: white;
-  padding: 5px;
+  padding: 0.5rem;
   position: fixed;
   bottom: 0;
   left: 0;

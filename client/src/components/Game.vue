@@ -261,7 +261,7 @@ footer {
 }
 .player-name {
   font-size: x-large;
-  padding: 0.25rem;
+  padding: 0.75rem;
   color: white;
 }
 #player1-name {
@@ -299,7 +299,7 @@ footer {
   border-color: darkslategrey;
 }
 img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
 }
 </style>
