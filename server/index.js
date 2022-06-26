@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
   console.log(`Client '${socket.id}' connected.`);
 });
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 httpServer.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}.`);
+  console.log(`Listening on port ${port}.`);
 });
