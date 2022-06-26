@@ -1,0 +1,3 @@
+{
+  "comment": "Trick the heroku/nodejs buildpack into thinking this is a single Node project"
+}
