@@ -4,6 +4,7 @@
       <div class="player-name" id="player1-name" :style="playerNameStyle(1)">Player 1</div>
       <div class="player-name" id="player2-name" :style="playerNameStyle(2)">Player 2</div>
     </div>
+    <h5 class="msg">{{ msg }}</h5>
     <div class="game-content">
       <div class="grid">
         <div class="cell" v-for="(path, index) in playingBoard" :key="index">
@@ -33,6 +34,7 @@ export default {
   },
   data() {
     return {
+      msg: "Choose a piece for your opponent to place",
       playingBoard: [
         null,
         null,
@@ -98,10 +100,11 @@ footer {
   display: flex;
   flex-direction: row;
   background-color: darkslategrey;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 .player-name {
-  padding: 10px;
+  font-size: x-large;
+  padding: 0.25rem;
   color: white;
 }
 #player1-name {
@@ -115,6 +118,9 @@ footer {
   flex-direction: row;
   flex-wrap: wrap;
 }
+.msg {
+  margin-bottom: 1.5rem;
+}
 .grid {
   display: grid;
   grid-template-columns: auto auto auto auto;
@@ -124,8 +130,8 @@ footer {
   background-color: darkslategrey;
 }
 .cell, .single-cell {
-  width: 7rem;
-  height: 7rem;
+  width: 8rem;
+  height: 8rem;
   padding: 0px;
   margin: auto;
   background-color: white;
