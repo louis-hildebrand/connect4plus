@@ -1,1 +1,1 @@
-web: npm install ./client && npm --prefix client run start
+web: npm install ./client && node client/server.js
