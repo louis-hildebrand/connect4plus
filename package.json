@@ -1,5 +1,9 @@
 {
   "comment": "Trick the heroku/nodejs buildpack into thinking this is a single Node project",
+  "dependencies": {
+    "client": "file:client",
+    "server": "file:server"
+  },
   "engines": {
     "node": "16.x",
     "npm": "8.5.x"
