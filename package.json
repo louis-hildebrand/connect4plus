@@ -1,3 +1,7 @@
 {
-  "comment": "Trick the heroku/nodejs buildpack into thinking this is a single Node project"
+  "comment": "Trick the heroku/nodejs buildpack into thinking this is a single Node project",
+  "engines": {
+    "node": "16.x",
+    "npm": "8.5.x"
+  }
 }
