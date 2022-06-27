@@ -1,1 +1,1 @@
-web: npm install ./client && npm run start --prefix client && npm run build --prefix client
+web: echo "Installing dependencies" && npm install ./client echo "Starting server" && npm run start --prefix client && npm run build --prefix client
