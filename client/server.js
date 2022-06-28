@@ -1,14 +1,15 @@
-const config = require("config");
-const express = require("express");
 const history = require("connect-history-api-fallback");
-const serveStatic = require("serve-static");
+const express = require("express");
 const path = require("path");
+const serveStatic = require("serve-static");
+
+const config = require("./src/config");
 
 app = express();
 app.use(history());
 app.use(serveStatic(path.join(__dirname, "dist")));
 
-const port = process.env.PORT || config.get("server.port");
+const port = process.env.PORT || config.port;
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });

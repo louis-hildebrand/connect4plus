@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import config from "config";
+import config from "@/config";
 import { io } from "socket.io-client";
 
 export default {

@@ -1,6 +1,0 @@
-{
-  "server": {
-    "port": 5001
-  },
-  "backendUrl": "https://localhost:5000/"
-}
