@@ -18,7 +18,7 @@ export default {
 
     this.socket = io(config.backendUrl);
     this.socket.on("connect", () => {
-      console.log("Connected to the server.");
+      console.log(`Connected to the server (URL: ${config.backendUrl}).`);
     });
 
     this.$router.replace({ name: "Home" });
