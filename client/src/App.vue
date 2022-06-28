@@ -3,10 +3,8 @@
 </template>
 
 <script>
+import config from "config";
 import { io } from "socket.io-client";
-
-//const backendUrl = "ws://localhost:3000/";
-const backendUrl = "https://connect4plus-backend.herokuapp.com/";
 
 export default {
   name: "App",
@@ -18,7 +16,7 @@ export default {
   created() {
     document.title = "Quarto";
 
-    this.socket = io(backendUrl);
+    this.socket = io(config.backendUrl);
     this.socket.on("connect", () => {
       console.log("Connected to the server.");
     });
