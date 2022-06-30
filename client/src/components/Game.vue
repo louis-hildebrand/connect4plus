@@ -249,10 +249,6 @@ export default {
 </script>
 
 <style scoped>
-footer {
-  height: 50px;
-  text-align: center;
-}
 .game-header {
   display: flex;
   flex-direction: row;
@@ -261,7 +257,7 @@ footer {
 }
 .player-name {
   font-size: x-large;
-  padding: 0.75rem;
+  padding: 10px;
   color: white;
 }
 #player1-name {
@@ -272,34 +268,45 @@ footer {
 }
 .game-content {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-.msg {
-  margin-bottom: 1.5rem;
 }
 .grid {
   display: grid;
   grid-template-columns: auto auto auto auto;
-  gap: 0.3rem;
-  padding: 0.3rem;
+  grid-auto-columns: 1fr;
+  gap: 5px;
+  padding: 5px;
   margin: auto;
   background-color: darkslategrey;
 }
 .cell, .single-cell {
-  width: 8rem;
-  height: 8rem;
-  padding: 0px;
-  margin: auto;
   background-color: white;
 }
 .single-cell {
   border-style: solid;
-  border-width: 0.3rem;
   border-color: darkslategrey;
+  border-width: 5px;
+  margin: auto;
 }
 img {
   width: 100%;
   height: 100%;
+}
+@media (orientation: landscape) {
+  .game-content {
+    flex-direction: row;
+  }
+  .cell, .single-cell {
+    width: 15vh;
+    height: 15vh;
+  }
+}
+@media (orientation: portrait) {
+  .game-content {
+    flex-direction: column;
+  }
+  .cell, .single-cell {
+    width: 15vw;
+    height: 15vw;
+  }
 }
 </style>
