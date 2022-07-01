@@ -1,8 +1,8 @@
 <template>
   <div class="component-content">
     <div class="game-header">
-      <div class="player-name" id="player1-name" :style="playerNameStyle(1)">Player 1</div>
-      <div class="player-name" id="player2-name" :style="playerNameStyle(2)">Player 2</div>
+      <div class="player-name" :style="playerNameStyle(1)">Player 1</div>
+      <div class="player-name" :style="playerNameStyle(2)">Player 2</div>
     </div>
     <div class="msg">{{ msg }}</div>
     <div class="game-content">
@@ -47,6 +47,8 @@
 .game-header {
   display: flex;
   flex-direction: row;
+  justify-content: end;
+  gap: 10px;
   background-color: darkslategrey;
 }
 
@@ -57,14 +59,6 @@
 .player-name {
   padding: 5px;
   color: white;
-}
-
-#player1-name {
-  margin-right: auto;
-}
-
-#player2-name {
-  margin-left: auto;
 }
 
 .msg {
