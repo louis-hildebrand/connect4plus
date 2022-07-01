@@ -42,7 +42,7 @@ export default {
   color: black;
 }
 
-html, body, #app, #app-template {
+html, body, #app, #app-template, .component-content {
   width: 100%;
   height: 100%;
 }

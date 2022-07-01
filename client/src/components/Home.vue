@@ -1,10 +1,43 @@
 <template>
-  <div class="content">
-    <button type="button" @click="createGame">Create game</button>
-    <button type="button" @click="joinGame">Join game</button>
-    <p>Enter the game code:</p>
-    <input type="text" v-model="gameCodeInput" style="text-transform: uppercase" v-on:keypress="ensureLetter($event)">
-    <p v-if="errorMsg" style="color: red;">{{errorMsg}}</p>
+  <div class="component-content">
+    <!-- Join game modal -->
+    <div class="modal" id="join-game-modal" data-bs-backdrop="false" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Join an existing game</h5>
+          </div>
+          <div class="modal-body">
+            <p>Enter the game code:</p>
+            <input
+              type="text"
+              v-model="gameCodeInput"
+              style="text-transform: uppercase"
+              v-on:keypress="ensureLetter($event)"
+            >
+            <p v-if="errorMsg" style="color: red;">{{errorMsg}}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" @click="joinGame">
+              Join game
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="button-container">
+      <!-- Create game button -->
+      <button type="button" class="btn btn-primary" @click="createGame">
+        Create game
+      </button>
+      <!-- Join game button -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#join-game-modal">
+        Join game
+      </button>
+    </div>
   </div>
 </template>
 
@@ -81,3 +114,36 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.component-content {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+}
+
+.button-container {
+  max-width: 20rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 5%;
+  align-self: center;
+}
+
+/*
+button, input {
+  max-width: 20rem;
+  align-self: center;
+  width: 100%;
+}
+*/
+
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+}
+</style>

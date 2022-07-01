@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="component-content">
     <div class="game-header">
       <div class="player-name" id="player1-name" :style="playerNameStyle(1)">Player 1</div>
       <div class="player-name" id="player2-name" :style="playerNameStyle(2)">Player 2</div>
