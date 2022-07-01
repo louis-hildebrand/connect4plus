@@ -134,14 +134,6 @@ export default {
   align-self: center;
 }
 
-/*
-button, input {
-  max-width: 20rem;
-  align-self: center;
-  width: 100%;
-}
-*/
-
 .modal-footer {
   display: flex;
   flex-direction: row;
