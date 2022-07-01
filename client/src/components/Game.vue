@@ -6,15 +6,15 @@
     </div>
     <div class="msg">{{ msg }}</div>
     <div class="game-content">
-      <div class="grid">
+      <div class="single-cell">
+        <img v-if="selectedPiece" :src="getImg(selectedPiece)" />
+      </div>
+      <div class="grid" id="playing-board">
         <div class="cell" v-for="(piece, index) in playingBoard" :key="index" @click="placePiece(index)">
           <img v-if="piece" :src="getImg(piece)" />
         </div>
       </div>
-      <div class="single-cell">
-        <img v-if="selectedPiece" :src="getImg(selectedPiece)" />
-      </div>
-      <div class="grid">
+      <div class="grid" id="available-pieces">
         <div class="cell" v-for="(piece, index) in availablePieces" :key="index" @click="choosePiece(index)">
           <img v-if="piece" :src="getImg(piece)" />
         </div>
@@ -291,7 +291,12 @@ export default {
   gap: 5px;
   padding: 5px;
   margin: auto;
+}
+#playing-board {
   background-color: darkslategrey;
+}
+#available-pieces {
+  background-color: white;
 }
 
 .cell, .single-cell {
@@ -299,8 +304,8 @@ export default {
 }
 
 .single-cell {
-border-style: solid;
-  border-color: darkslategrey;
+  border-style: solid;
+  border-color: lightgrey;
   border-width: 5px;
   margin: auto;
 }
