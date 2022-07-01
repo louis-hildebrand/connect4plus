@@ -10,24 +10,8 @@ export default {
       gameOverTie: false,
       currentPlayer: 1,
       placingPiece: false,
-      playingBoard: [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-      ],
+      playingBoard: Array(16).fill(null),
+      playingBoardHighlight: null,
       availablePieces: [
         {color: "dark",  shape: "square", mark: "o", border: "thick"},
         {color: "dark",  shape: "square", mark: "o", border: "thin"},
@@ -46,6 +30,7 @@ export default {
         {color: "light", shape: "circle", mark: "o", border: "thin"},
         {color: "light", shape: "circle", mark: "o", border: "thick"}
       ],
+      availablePiecesHighlight: null,
       selectedPiece: null
     };
   },
@@ -108,11 +93,22 @@ export default {
         return "";
       }
     },
+    cellBackgroundStyle(isPlayingBoard, index) {
+      const boardHighlight = isPlayingBoard ? this.playingBoardHighlight : this.availablePiecesHighlight;
+      const color = boardHighlight === index ? "var(--selected-cell-highlight-color, white)" : "white";
+      return `background-color: ${color};`;
+    },
     choosePiece(index) {
       if (this.gameOver) return;
       if (this.myNumber * 1 !== this.currentPlayer) return;
       if (this.placingPiece) return;
       if (!this.availablePieces[index]) return;
+      if (this.availablePiecesHighlight !== index) {
+        this.availablePiecesHighlight = index;
+        return;
+      }
+
+      this.availablePiecesHighlight = null;
 
       this.$root.socket.emit("choose-piece", {gameCode: this.gameCode, piece: index});
 
@@ -129,6 +125,12 @@ export default {
       if (this.myNumber * 1 !== this.currentPlayer) return;
       if (!this.placingPiece) return;
       if (this.playingBoard[index]) return;
+      if (this.playingBoardHighlight !== index) {
+        this.playingBoardHighlight = index;
+        return;
+      }
+
+      this.playingBoardHighlight = null;
 
       this.$root.socket.emit("place-piece", {gameCode: this.gameCode, piece: index});
 

@@ -34,6 +34,10 @@ export default {
 </script>
 
 <style>
+:root {
+  --selected-cell-highlight-color: khaki;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
