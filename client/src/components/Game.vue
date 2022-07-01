@@ -90,6 +90,10 @@
 .cell {
   padding: 5%;
 }
+/* Prevent the cell from turning blue when double-clicked. */
+img::selection {
+  display: none;
+}
 .single-cell {
   border-style: solid;
   border-color: lightgrey;
