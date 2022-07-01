@@ -4,7 +4,7 @@
       <div class="player-name" id="player1-name" :style="playerNameStyle(1)">Player 1</div>
       <div class="player-name" id="player2-name" :style="playerNameStyle(2)">Player 2</div>
     </div>
-    <h5 class="msg">{{ msg }}</h5>
+    <div class="msg">{{ msg }}</div>
     <div class="game-content">
       <div class="grid">
         <div class="cell" v-for="(piece, index) in playingBoard" :key="index" @click="placePiece(index)">
@@ -243,26 +243,47 @@ export default {
 </script>
 
 <style scoped>
+.component-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .game-header {
   display: flex;
   flex-direction: row;
   background-color: darkslategrey;
-  margin-bottom: 1.5rem;
 }
+
+.game-header, .msg {
+  max-height: 50px;
+}
+
 .player-name {
-  font-size: x-large;
-  padding: 10px;
+  padding: 5px;
   color: white;
 }
+
 #player1-name {
   margin-right: auto;
 }
+
 #player2-name {
   margin-left: auto;
 }
-.game-content {
-  display: flex;
+
+.msg {
+  padding: 5px;
+  align-self: center;
 }
+
+.game-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
 .grid {
   display: grid;
   grid-template-columns: auto auto auto auto;
@@ -272,35 +293,42 @@ export default {
   margin: auto;
   background-color: darkslategrey;
 }
+
 .cell, .single-cell {
   background-color: white;
 }
+
 .single-cell {
-  border-style: solid;
+border-style: solid;
   border-color: darkslategrey;
   border-width: 5px;
   margin: auto;
 }
+
 img {
   width: 100%;
   height: 100%;
 }
+
 @media (orientation: landscape) {
   .game-content {
     flex-direction: row;
   }
+
   .cell, .single-cell {
-    width: 15vh;
-    height: 15vh;
+    width: min(9vw, (100vh - 150px) / 5);
+    height: min(9vw, (100vh - 150px) / 5);
   }
 }
+
 @media (orientation: portrait) {
   .game-content {
     flex-direction: column;
   }
+  
   .cell, .single-cell {
-    width: 15vw;
-    height: 15vw;
+    width: min(15vw, (100vh - 150px) / 11);
+    height: min(15vw, (100vh - 150px) / 11);
   }
 }
 </style>
