@@ -1,8 +1,10 @@
 <template>
   <div class="component-content">
-    <p>Your game code is</p>
-    <h1><strong>{{ gameCode }}</strong></h1>
-    <p>Share it with a friend to start playing.</p>
+    <div>Your game code is</div>
+    <h1 class="game-code">
+      <strong>{{ gameCode }}</strong>
+    </h1>
+    <div>Share it with a friend to start playing.</div>
   </div>
 </template>
 
@@ -25,3 +27,19 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.component-content {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  font: x-large;
+}
+
+.game-code {
+  border: 2px black solid;
+  align-self: center;
+  padding: 15px;
+  font: xx-large;
+}
+</style>
