@@ -2,7 +2,9 @@ export default {
   name: "Game",
   props: [
     "gameCode",
-    "myNumber"
+    "myNumber",
+    "player1Name",
+    "player2Name"
   ],
   data() {
     return {

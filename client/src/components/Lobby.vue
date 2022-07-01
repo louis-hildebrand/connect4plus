@@ -21,8 +21,13 @@ export default {
     registerSocketListeners() {
       this.$root.socket.on("game-started", this.handleGameStarted);
     },
-    handleGameStarted() {
-      this.$router.replace({ name: "Game", params: {gameCode: this.gameCode, myNumber: 1} });
+    handleGameStarted(arg) {
+      this.$router.replace({ name: "Game", params: {
+        gameCode: this.gameCode,
+        myNumber: 1,
+        player1Name: arg.player1Name,
+        player2Name: arg.player2Name
+      }});
     }
   }
 };

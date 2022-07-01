@@ -17,6 +17,10 @@ function handleJoinGame(io, socket, arg) {
     return;
   }
 
+  const roomHostId = roomMembers.values().next().value;
+  const roomHost = io.sockets.sockets.get(roomHostId);
+  console.log(typeof roomHost)
+
   // Leave any existing rooms (except their personal room) and add them to the requested room
   socket.rooms.forEach(room => {
     if (room !== socket.id) {
@@ -28,7 +32,7 @@ function handleJoinGame(io, socket, arg) {
   console.log(`Client '${socket.id}' joined room '${gameCode}'.`);
 
   // Alert both players that the game can start
-  io.to(gameCode).emit("game-started");
+  io.to(gameCode).emit("game-started", {player1Name: roomHost.displayName, player2Name: arg.player2Name});
 
   console.log(`Game '${gameCode}' started.`);
 }

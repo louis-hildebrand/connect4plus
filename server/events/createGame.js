@@ -32,6 +32,9 @@ function handleCreateGame(io, socket, arg) {
   const gameCode = newGameCode(existingRooms);
   socket.join(gameCode);
 
+  // Save display name
+  socket.displayName = arg.player1Name;
+
   // Let the client know what their game code is
   io.to(socket.id).emit("game-created", {
     gameCode: gameCode

@@ -1,20 +1,29 @@
 <template>
   <div class="component-content">
     <!-- Join game modal -->
-    <div class="modal" id="join-game-modal" data-bs-backdrop="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="join-game-modal" data-bs-backdrop="false" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Join an existing game</h5>
           </div>
           <div class="modal-body">
-            <p>Enter the game code:</p>
-            <input
-              type="text"
-              v-model="gameCodeInput"
-              style="text-transform: uppercase"
-              v-on:keypress="ensureLetter($event)"
-            >
+            <div class="modal-content-row">
+              <div>Enter the game code:</div>
+              <input
+                type="text"
+                v-model="gameCodeInput"
+                style="text-transform: uppercase"
+                v-on:keypress="ensureLetter($event)"
+              >
+            </div>
+            <div class="modal-content-row">
+              <div>Choose a display name:</div>
+              <input
+                type="text"
+                v-model="player2Name"
+              >
+            </div>
             <p v-if="errorMsg" style="color: red;">{{errorMsg}}</p>
           </div>
           <div class="modal-footer">
@@ -28,9 +37,37 @@
         </div>
       </div>
     </div>
+    <!-- Create game modal -->
+    <div class="modal fade" id="create-game-modal" data-bs-backdrop="false" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Create a new game</h5>
+          </div>
+          <div class="modal-body">
+            <div class="modal-content-row">
+              <div>Choose a display name:</div>
+              <input
+                type="text"
+                v-model="player1Name"
+              >
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" @click="createGame">
+              Create game
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Buttons -->
     <div class="button-container">
       <!-- Create game button -->
-      <button type="button" class="btn btn-primary" @click="createGame">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-game-modal">
         Create game
       </button>
       <!-- Join game button -->
@@ -47,7 +84,9 @@ export default {
   data() {
     return {
       errorMsg: "",
-      gameCodeInput: ""
+      gameCodeInput: "",
+      player1Name: "",
+      player2Name: ""
     };
   },
   computed: {
@@ -96,16 +135,22 @@ export default {
       this.errorMsg = "There is no game with that code."
     },
     handleGameStarted(arg) {
-      this.$router.push({ name: "Game", params: {gameCode: this.gameCode, myNumber: 2} });
+      console.log(arg);
+      this.$router.push({ name: "Game", params: {
+        gameCode: this.gameCode,
+        myNumber: 2,
+        player1Name: arg.player1Name,
+        player2Name: arg.player2Name
+      }});
     },
     createGame() {
       console.log("Creating a new game.");
-      this.$root.socket.emit("create-game");
+      this.$root.socket.emit("create-game", {player1Name: this.player1Name});
     },
     joinGame() {
       if (this.gameCode) {
         console.log(`Joining game '${this.gameCode}'.`);
-        this.$root.socket.emit("join-game", {gameCode: this.gameCode});
+        this.$root.socket.emit("join-game", {gameCode: this.gameCode, player2Name: this.player2Name});
       }
       else {
         this.errorMsg = "Please enter a game code.";
@@ -132,6 +177,13 @@ export default {
   justify-content: center;
   row-gap: 5%;
   align-self: center;
+}
+
+.modal-content-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.5em;
 }
 
 .modal-footer {
