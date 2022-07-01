@@ -1,24 +1,16 @@
 <template>
-  <body>
-    <div class="content">
-      <button type="button" @click="createGame">Create game</button>
-      <button type="button" @click="joinGame">Join game</button>
-      <p>Enter the game code:</p>
-      <input type="text" v-model="gameCodeInput" style="text-transform: uppercase" v-on:keypress="ensureLetter($event)">
-      <p v-if="errorMsg" style="color: red;">{{errorMsg}}</p>
-    </div>
-    <QuartoFooter />
-  </body>
+  <div class="content">
+    <button type="button" @click="createGame">Create game</button>
+    <button type="button" @click="joinGame">Join game</button>
+    <p>Enter the game code:</p>
+    <input type="text" v-model="gameCodeInput" style="text-transform: uppercase" v-on:keypress="ensureLetter($event)">
+    <p v-if="errorMsg" style="color: red;">{{errorMsg}}</p>
+  </div>
 </template>
 
 <script>
-import QuartoFooter from "./QuartoFooter.vue";
-
 export default {
   name: "Home",
-  components: {
-    QuartoFooter
-  },
   data() {
     return {
       errorMsg: "",

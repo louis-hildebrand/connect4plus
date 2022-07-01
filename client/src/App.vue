@@ -1,5 +1,12 @@
 <template>
-  <router-view/>
+  <div id="app-template">
+    <div id="app-content">
+      <router-view/>
+    </div>
+    <footer>
+      View on GitHub: <a href="https://github.com/louis-hildebrand/quarto">louis-hildebrand/quarto</a>
+    </footer>
+  </div>
 </template>
 
 <script>
@@ -35,16 +42,24 @@ export default {
   color: black;
 }
 
-#nav {
-  padding: 30px;
+html, body, #app, #app-template {
+  width: 100%;
+  height: 100%;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+#app-template {
+  display: flex;
+  flex-direction: column;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+#app-content {
+  flex: 1 1 auto;
+}
+
+footer {
+  flex: 0 1 auto;
+  text-align: left;
+  padding: 5px;
+  margin-top: 5px;
 }
 </style>

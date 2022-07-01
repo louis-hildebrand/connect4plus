@@ -1,20 +1,14 @@
 <template>
-  <body>
+  <div class="content">
     <p>Your game code is</p>
     <h1><strong>{{ gameCode }}</strong></h1>
     <p>Share it with a friend to start playing.</p>
-    <QuartoFooter />
-  </body>
+  </div>
 </template>
 
 <script>
-import QuartoFooter from "./QuartoFooter.vue";
-
 export default {
   name: "Lobby",
-  components: {
-    QuartoFooter
-},
   props: [
     "gameCode"
   ],

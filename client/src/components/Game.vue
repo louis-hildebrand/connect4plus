@@ -1,5 +1,5 @@
 <template>
-  <body>
+  <div class="content">
     <div class="game-header">
       <div class="player-name" id="player1-name" :style="playerNameStyle(1)">Player 1</div>
       <div class="player-name" id="player2-name" :style="playerNameStyle(2)">Player 2</div>
@@ -20,18 +20,12 @@
         </div>
       </div>
     </div>
-    <QuartoFooter />
-  </body>
+  </div>
 </template>
 
 <script>
-import QuartoFooter from "./QuartoFooter.vue";
-
 export default {
   name: "Game",
-  components: {
-    QuartoFooter
-  },
   props: [
     "gameCode",
     "myNumber"
