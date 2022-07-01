@@ -11,7 +11,7 @@ export default {
       currentPlayer: 1,
       placingPiece: false,
       playingBoard: Array(16).fill(null),
-      playingBoardHighlight: null,
+      playingBoardHighlight: [],
       availablePieces: [
         {color: "dark",  shape: "square", mark: "o", border: "thick"},
         {color: "dark",  shape: "square", mark: "o", border: "thin"},
@@ -30,7 +30,7 @@ export default {
         {color: "light", shape: "circle", mark: "o", border: "thin"},
         {color: "light", shape: "circle", mark: "o", border: "thick"}
       ],
-      availablePiecesHighlight: null,
+      availablePiecesHighlight: [],
       selectedPiece: null
     };
   },
@@ -95,7 +95,8 @@ export default {
     },
     cellBackgroundStyle(isPlayingBoard, index) {
       const boardHighlight = isPlayingBoard ? this.playingBoardHighlight : this.availablePiecesHighlight;
-      const color = boardHighlight === index ? "var(--selected-cell-highlight-color, white)" : "white";
+      const highlightThis = boardHighlight.some(x => x === index);
+      const color = highlightThis ? "var(--selected-cell-highlight-color, white)" : "white";
       return `background-color: ${color};`;
     },
     choosePiece(index) {
@@ -103,12 +104,12 @@ export default {
       if (this.myNumber * 1 !== this.currentPlayer) return;
       if (this.placingPiece) return;
       if (!this.availablePieces[index]) return;
-      if (this.availablePiecesHighlight !== index) {
-        this.availablePiecesHighlight = index;
+      if (!this.availablePiecesHighlight.some(x => x === index)) {
+        this.availablePiecesHighlight = [index];
         return;
       }
 
-      this.availablePiecesHighlight = null;
+      this.availablePiecesHighlight = [];
 
       this.$root.socket.emit("choose-piece", {gameCode: this.gameCode, piece: index});
 
@@ -125,12 +126,12 @@ export default {
       if (this.myNumber * 1 !== this.currentPlayer) return;
       if (!this.placingPiece) return;
       if (this.playingBoard[index]) return;
-      if (this.playingBoardHighlight !== index) {
-        this.playingBoardHighlight = index;
+      if (!this.playingBoardHighlight.some(x => x === index)) {
+        this.playingBoardHighlight = [index];
         return;
       }
 
-      this.playingBoardHighlight = null;
+      this.playingBoardHighlight = [];
 
       this.$root.socket.emit("place-piece", {gameCode: this.gameCode, piece: index});
 
@@ -160,7 +161,7 @@ export default {
       this.placingPiece = !this.placingPiece;
     },
     win(winningIndices) {
-      console.log(`Win detected: ${winningIndices}`);
+      this.playingBoardHighlight = winningIndices;
       this.gameOverWin = true;
     },
     tie() {
