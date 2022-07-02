@@ -5,7 +5,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Join an existing game</h5>
+            <h5 class="modal-title"><b>Join an existing game</b></h5>
           </div>
           <div class="modal-body">
             <div class="modal-content-row">
@@ -42,7 +42,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Create a new game</h5>
+            <h5 class="modal-title"><b>Create a new game</b></h5>
           </div>
           <div class="modal-body">
             <div class="modal-content-row">
@@ -169,7 +169,7 @@ export default {
 }
 
 .button-container {
-  max-width: 20rem;
+  max-width: min(20rem, 80%);
   width: 100%;
   height: 100%;
   display: flex;
@@ -181,9 +181,11 @@ export default {
 
 .modal-content-row {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
-  justify-content: center;
-  gap: 1.5em;
+  justify-content: right;
+  column-gap: 1.5em;
+  margin: 10px;
 }
 
 .modal-footer {
