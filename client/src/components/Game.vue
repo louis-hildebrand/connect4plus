@@ -8,10 +8,10 @@
         {{ player2Name ? `${player2Name} (guest)` : "Guest" }}
       </div>
     </div>
-    <div class="msg">{{ msg }}</div>
+    <div class="msg">{{ message }}</div>
     <div class="game-content">
       <div class="single-cell">
-        <img v-if="selectedPiece" :src="getImg(selectedPiece)" />
+        <img v-if="selectedPiece" :src="image(selectedPiece)" />
       </div>
       <div class="grid" id="playing-board">
         <div class="cell"
@@ -20,7 +20,7 @@
           @click="placePiece(index)"
           :style="cellBackgroundStyle(true, index)"
         >
-          <img v-if="piece" :src="getImg(piece)" />
+          <img v-if="piece" :src="image(piece)" />
         </div>
       </div>
       <div class="grid" id="available-pieces">
@@ -30,7 +30,7 @@
           @click="choosePiece(index)"
           :style="cellBackgroundStyle(false, index)"
         >
-          <img v-if="piece" :src="getImg(piece)" />
+          <img v-if="piece" :src="image(piece)" />
         </div>
       </div>
     </div>
