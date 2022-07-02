@@ -4,7 +4,8 @@
       <router-view/>
     </div>
     <footer>
-      View on GitHub: <a href="https://github.com/louis-hildebrand/quarto">louis-hildebrand/quarto</a>
+      <img class="footer-mark" src="@/assets/github.png">
+      <a href="https://github.com/louis-hildebrand/quarto">Source code</a>
     </footer>
   </div>
 </template>
@@ -61,6 +62,10 @@ html, body, #app, #app-template, .component-content {
 }
 
 footer {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
   flex: 0 1 auto;
   text-align: left;
   padding: 5px;
