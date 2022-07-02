@@ -182,7 +182,7 @@ function handlePiecePlaced(index) {
 
 function image(piece) {
   const name = piece.color + "-" + piece.shape + "-" + piece.mark + "-" + piece.border + ".png";
-  return require("@/assets/" + name);
+  return require("@/assets/pieces/" + name);
 }
 
 function placePiece(index) {
