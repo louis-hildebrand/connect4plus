@@ -2,10 +2,10 @@
   <div class="component-content">
     <div class="game-header">
       <div class="player-name" :style="playerNameStyle(1)">
-        {{ player1Name ? player1Name : "Player 1" }}
+        {{ player1Name ? `${player1Name} (host)` : "Host" }}
       </div>
       <div class="player-name" :style="playerNameStyle(2)">
-        {{ player2Name ? player2Name : "Player 2" }}
+        {{ player2Name ? `${player2Name} (guest)` : "Guest" }}
       </div>
     </div>
     <div class="msg">{{ msg }}</div>
