@@ -55,10 +55,10 @@ function message() {
     return "Choose a piece for your opponent.";
   }
   else if (myNumber !== this.currentPlayer && this.placingPiece) {
-    return "Waiting for opponent.";
+    return "Waiting for opponent's move...";
   }
   else if (myNumber !== this.currentPlayer && !this.placingPiece) {
-    return "Waiting for opponent.";
+    return "Waiting for opponent's move...";
   }
   else {
     return "Invalid state. Please refresh the page.";
