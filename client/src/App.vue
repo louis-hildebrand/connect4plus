@@ -36,7 +36,16 @@ export default {
 
 <style>
 :root {
-  --selected-cell-highlight-color: khaki;
+  --color-dark-main: darkslategrey;
+  --color-dark-highlight: #447a7a;
+  --color-light-main: #63a7a7;
+  --color-light-highlight: #9fd3d3;
+  --color-selected-cell-highlight: khaki;
+  --color-font-dark: black;
+  --color-font-light: white;
+  --color-background: rgb(235, 235, 235);
+  --color-outline-dark: black;
+  --color-outline-light: lightgrey;
 }
 
 #app {
@@ -44,7 +53,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: black;
+  color: var(--color-font-dark, black);
+  background-color: var(--color-background, white);
 }
 
 html, body, #app, #app-template, .component-content {

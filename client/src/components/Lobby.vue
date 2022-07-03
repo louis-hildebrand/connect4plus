@@ -66,8 +66,8 @@ header {
 }
 
 .game-code {
-  border: 2px black solid;
-  background-color: rgb(234, 234, 234);
+  border: 2px var(--color-outline-dark, black) solid;
+  background-color: lightgrey;
   padding: 15px;
   margin: 20px;
   font: xx-large;

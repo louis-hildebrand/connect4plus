@@ -145,7 +145,7 @@ function advanceGameState() {
 function cellBackgroundStyle(isPlayingBoard, index) {
   const boardHighlight = isPlayingBoard ? this.playingBoardHighlight : this.availablePiecesHighlight;
   const highlightThis = boardHighlight.some(x => x === index);
-  const color = highlightThis ? "var(--selected-cell-highlight-color, white)" : "white";
+  const color = highlightThis ? "var(--color-selected-cell-highlight, khaki)" : "var(--color-background, white)";
   return `background-color: ${color};`;
 }
 
@@ -204,7 +204,7 @@ function placePiece(index) {
 
 function playerNameStyle(player) {
   if (player === this.currentPlayer) {
-    return "background-color: #63a7a7;";
+    return "background-color: var(--color-dark-highlight, #447a7a);";
   }
   else {
     return "";

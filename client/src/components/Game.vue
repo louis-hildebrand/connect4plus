@@ -82,10 +82,10 @@
   margin: 5px;
 }
 #playing-board {
-  background-color: black;
+  background-color: var(--color-outline-dark, black);
 }
 #available-pieces {
-  background-color: white;
+  background-color: var(--color-background, white);
 }
 
 .cell {
@@ -97,7 +97,7 @@ img::selection {
 }
 .single-cell {
   border-style: solid;
-  border-color: lightgrey;
+  border-color: var(--color-outline-light);
   border-width: 4px;
   margin: 5px;
 }

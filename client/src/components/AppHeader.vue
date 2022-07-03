@@ -7,12 +7,12 @@
 
 <style scoped>
 .header-content {
-  background: darkslategrey;
+  background: var(--color-dark-main, darkslategrey);
   display: flex;
   flex-direction: row;
   justify-content: right;
   align-content: center;
-  color: white;
+  color: var(--color-font-light, white);
   margin-bottom: 15px;
   max-height: 60px;
 }
