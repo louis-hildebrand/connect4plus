@@ -204,7 +204,7 @@ function placePiece(index) {
 
 function playerNameStyle(player) {
   if (player === this.currentPlayer) {
-    return "background-color: slategrey;";
+    return "background-color: #63a7a7;";
   }
   else {
     return "";
@@ -224,6 +224,8 @@ function removeSocketListeners() {
 // -----------------------------------------------------------------------------
 // Export
 // -----------------------------------------------------------------------------
+import AppHeader from './AppHeader.vue';
+
 export default {
   name: "Game",
   props: [
@@ -256,5 +258,8 @@ export default {
     placePiece,
     handlePiecePlaced,
     advanceGameState
+  },
+  components: {
+    AppHeader
   }
 };

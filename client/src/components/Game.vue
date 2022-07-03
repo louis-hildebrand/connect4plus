@@ -1,13 +1,19 @@
 <template>
   <div class="component-content">
-    <div class="game-header">
-      <div class="player-name" :style="playerNameStyle(1)">
-        {{ player1Name ? `${player1Name} (host)` : "Host" }}
-      </div>
-      <div class="player-name" :style="playerNameStyle(2)">
-        {{ player2Name ? `${player2Name} (guest)` : "Guest" }}
-      </div>
-    </div>
+    <header>
+      <AppHeader>
+        <div class="player-name" :style="playerNameStyle(1)">
+          <span class="player-name-text">
+            {{ player1Name ? `${player1Name} (host)` : "Host" }}
+          </span>
+        </div>
+        <div class="player-name" :style="playerNameStyle(2)">
+          <span class="player-name-text">
+            {{ player2Name ? `${player2Name} (guest)` : "Guest" }}
+          </span>
+        </div>
+      </AppHeader>
+    </header>
     <div class="msg">{{ message }}</div>
     <div class="game-content">
       <div class="single-cell">
@@ -48,20 +54,11 @@
   flex-direction: column;
 }
 
-.game-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-  background-color: darkslategrey;
-}
-
-.game-header, .msg {
-  max-height: 50px;
-}
-
 .player-name {
   padding: 5px 15px 5px 15px;
-  color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .msg {
@@ -79,12 +76,12 @@
   display: grid;
   grid-template-columns: auto auto auto auto;
   grid-auto-columns: 1fr;
-  gap: 5px;
-  padding: 5px;
+  gap: 4px;
+  padding: 4px;
   margin: auto;
 }
 #playing-board {
-  background-color: darkslategrey;
+  background-color: black;
 }
 #available-pieces {
   background-color: white;
@@ -100,7 +97,7 @@ img::selection {
 .single-cell {
   border-style: solid;
   border-color: lightgrey;
-  border-width: 5px;
+  border-width: 4px;
   margin: auto;
 }
 

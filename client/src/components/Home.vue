@@ -1,5 +1,8 @@
 <template>
   <div class="component-content">
+    <header>
+      <AppHeader />
+    </header>
     <!-- Join game modal -->
     <div class="modal fade" id="join-game-modal" data-bs-backdrop="false" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -79,84 +82,89 @@
 </template>
 
 <script>
+import AppHeader from './AppHeader.vue';
+
 export default {
-  name: "Home",
-  data() {
-    return {
-      errorMsg: "",
-      gameCodeInput: "",
-      player1Name: "",
-      player2Name: ""
-    };
-  },
-  computed: {
-    gameCode() {
-      return this.gameCodeInput.toUpperCase();
+    name: "Home",
+    data() {
+        return {
+            errorMsg: "",
+            gameCodeInput: "",
+            player1Name: "",
+            player2Name: ""
+        };
+    },
+    computed: {
+        gameCode() {
+            return this.gameCodeInput.toUpperCase();
+        }
+    },
+    created() {
+        this.registerSocketListeners();
+    },
+    unmounted() {
+        this.removeSocketListeners();
+    },
+    methods: {
+        ensureLetter(evt) {
+            const char = String.fromCharCode(evt.keyCode);
+            if (/[A-Za-z]/.test(char)) {
+                return true;
+            }
+            else {
+                evt.preventDefault();
+                return false;
+            }
+        },
+        registerSocketListeners() {
+            this.$root.socket.on("game-created", this.handleGameCreated);
+            this.$root.socket.on("game-not-found", this.handleGameNotFound);
+            this.$root.socket.on("game-already-started", this.handleGameAlreadyStarted);
+            this.$root.socket.on("game-started", this.handleGameStarted);
+        },
+        removeSocketListeners() {
+            this.$root.socket.off("game-created", this.handleGameCreated);
+            this.$root.socket.off("game-not-found", this.handleGameNotFound);
+            this.$root.socket.off("game-already-started", this.handleGameAlreadyStarted);
+            this.$root.socket.off("game-started", this.handleGameStarted);
+        },
+        handleGameCreated(arg) {
+            this.$router.push({ name: "Lobby", params: { gameCode: arg.gameCode } });
+        },
+        handleGameAlreadyStarted(arg) {
+            console.log("Event 'game-already-started'.");
+            this.errorMsg = "That game has already started.";
+        },
+        handleGameNotFound(arg) {
+            console.log("Event 'game-not-found'.");
+            this.errorMsg = "There is no game with that code.";
+        },
+        handleGameStarted(arg) {
+            console.log(arg);
+            this.$router.push({ name: "Game", params: {
+                    gameCode: this.gameCode,
+                    myNumber: 2,
+                    player1Name: arg.player1Name,
+                    player2Name: arg.player2Name
+                } });
+        },
+        createGame() {
+            console.log("Creating a new game.");
+            this.$root.socket.emit("create-game", { player1Name: this.player1Name });
+        },
+        joinGame() {
+            if (this.gameCode) {
+                console.log(`Joining game '${this.gameCode}'.`);
+                this.$root.socket.emit("join-game", { gameCode: this.gameCode, player2Name: this.player2Name });
+            }
+            else {
+                this.errorMsg = "Please enter a game code.";
+            }
+        }
+    },
+    components: {
+      AppHeader
     }
-  },
-  created() {
-    this.registerSocketListeners();
-  },
-  unmounted() {
-    this.removeSocketListeners();
-  },
-  methods: {
-    ensureLetter(evt) {
-      const char = String.fromCharCode(evt.keyCode);
-      if (/[A-Za-z]/.test(char)) {
-        return true;
-      }
-      else {
-        evt.preventDefault();
-        return false;
-      }
-    },
-    registerSocketListeners() {
-      this.$root.socket.on("game-created", this.handleGameCreated);
-      this.$root.socket.on("game-not-found", this.handleGameNotFound);
-      this.$root.socket.on("game-already-started", this.handleGameAlreadyStarted);
-      this.$root.socket.on("game-started", this.handleGameStarted);
-    },
-    removeSocketListeners() {
-      this.$root.socket.off("game-created", this.handleGameCreated);
-      this.$root.socket.off("game-not-found", this.handleGameNotFound);
-      this.$root.socket.off("game-already-started", this.handleGameAlreadyStarted);
-      this.$root.socket.off("game-started", this.handleGameStarted);
-    },
-    handleGameCreated(arg) {
-      this.$router.push({ name: "Lobby", params: {gameCode: arg.gameCode} });
-    },
-    handleGameAlreadyStarted(arg) {
-      console.log("Event 'game-already-started'.");
-      this.errorMsg = "That game has already started.";
-    },
-    handleGameNotFound(arg) {
-      console.log("Event 'game-not-found'.");
-      this.errorMsg = "There is no game with that code."
-    },
-    handleGameStarted(arg) {
-      console.log(arg);
-      this.$router.push({ name: "Game", params: {
-        gameCode: this.gameCode,
-        myNumber: 2,
-        player1Name: arg.player1Name,
-        player2Name: arg.player2Name
-      }});
-    },
-    createGame() {
-      console.log("Creating a new game.");
-      this.$root.socket.emit("create-game", {player1Name: this.player1Name});
-    },
-    joinGame() {
-      if (this.gameCode) {
-        console.log(`Joining game '${this.gameCode}'.`);
-        this.$root.socket.emit("join-game", {gameCode: this.gameCode, player2Name: this.player2Name});
-      }
-      else {
-        this.errorMsg = "Please enter a game code.";
-      }
-    }
-  }
 };
 </script>
 
@@ -168,10 +176,15 @@ export default {
   justify-content: center;
 }
 
+header {
+  flex-grow: 0;
+}
+
 .button-container {
   max-width: min(20rem, 80%);
   width: 100%;
   height: 100%;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
