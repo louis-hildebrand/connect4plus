@@ -49,16 +49,16 @@ function message() {
     return "Game over. Tie.";
   }
   if (myNumber === this.currentPlayer && this.placingPiece) {
-    return "Choose where to place the piece";
+    return "Choose where to place the piece.";
   }
   else if (myNumber === this.currentPlayer && !this.placingPiece) {
-    return "Choose a piece for your opponent";
+    return "Choose a piece for your opponent.";
   }
   else if (myNumber !== this.currentPlayer && this.placingPiece) {
-    return "Your opponent is choosing where to place the piece";
+    return "Waiting for opponent.";
   }
   else if (myNumber !== this.currentPlayer && !this.placingPiece) {
-    return "Your opponent is choosing a piece for you";
+    return "Waiting for opponent.";
   }
   else {
     return "Invalid state. Please refresh the page.";
