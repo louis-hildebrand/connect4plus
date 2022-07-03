@@ -1,6 +1,6 @@
 <template>
   <div class="header-content">
-    <div class="app-name"><strong>Quarto</strong></div>
+    <div class="app-name"><strong>Connect 4+</strong></div>
     <slot></slot>
   </div>
 </template>
@@ -18,7 +18,7 @@
 }
 
 .app-name {
-  font-size: xx-large;
+  font-size: x-large;
   margin: 5px auto 5px 10px;
 }
 </style>

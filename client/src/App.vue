@@ -5,7 +5,7 @@
     </div>
     <footer>
       <img class="footer-mark" src="@/assets/github.png">
-      <a href="https://github.com/louis-hildebrand/quarto">Source code</a>
+      <a href="https://github.com/louis-hildebrand/connect4plus">Source code</a>
     </footer>
   </div>
 </template>
@@ -22,8 +22,6 @@ export default {
     }
   },
   created() {
-    document.title = "Quarto";
-
     this.socket = io(config.backendUrl);
     this.socket.on("connect", () => {
       console.log(`Connected to the server (URL: ${config.backendUrl}).`);
