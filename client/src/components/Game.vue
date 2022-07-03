@@ -55,7 +55,7 @@
 }
 
 .player-name {
-  padding: 5px 15px 5px 15px;
+  padding: 5px 10px 5px 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -69,7 +69,8 @@
 .game-content {
   flex-grow: 1;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .grid {
@@ -78,7 +79,7 @@
   grid-auto-columns: 1fr;
   gap: 4px;
   padding: 4px;
-  margin: auto;
+  margin: 5px;
 }
 #playing-board {
   background-color: black;
@@ -98,7 +99,7 @@ img::selection {
   border-style: solid;
   border-color: lightgrey;
   border-width: 4px;
-  margin: auto;
+  margin: 5px;
 }
 
 img {
