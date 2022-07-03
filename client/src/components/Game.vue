@@ -113,8 +113,8 @@ img {
   }
 
   .cell, .single-cell {
-    width: min(9vw, (100vh - 150px) / 5);
-    height: min(9vw, (100vh - 150px) / 5);
+    width: min(9vw, (100vh - 200px) / 5);
+    height: min(9vw, (100vh - 200px) / 5);
   }
 }
 
@@ -124,8 +124,8 @@ img {
   }
   
   .cell, .single-cell {
-    width: min(15vw, (100vh - 150px) / 11);
-    height: min(15vw, (100vh - 150px) / 11);
+    width: min(15vw, (100vh - 200px) / 11);
+    height: min(15vw, (100vh - 200px) / 11);
   }
 }
 </style>
