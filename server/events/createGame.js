@@ -17,9 +17,7 @@ function newGameCode(disallowed) {
   }
 }
 
-function handleCreateGame(io, socket, arg) {
-  console.log(`'create-game' (${socket.id})`);
-
+function handleCreateGame(io, socket, arg, callback) {
   // Leave any existing rooms (except their personal room)
   socket.rooms.forEach(room => {
     if (room !== socket.id) {
@@ -33,14 +31,10 @@ function handleCreateGame(io, socket, arg) {
   socket.join(gameCode);
 
   // Save display name
-  socket.displayName = arg.player1Name;
+  socket.displayName = arg.displayName;
 
   // Let the client know what their game code is
-  io.to(socket.id).emit("game-created", {
-    gameCode: gameCode
-  });
-
-  console.log(`Client '${socket.id}' created room '${gameCode}'.`);
+  callback({ gameCode: gameCode });
 }
 
 module.exports = handleCreateGame;

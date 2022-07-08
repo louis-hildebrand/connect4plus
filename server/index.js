@@ -30,7 +30,7 @@ io.of("/").adapter.on("delete-room", (room) => {
 
 // Event handlers
 io.on("connection", (socket) => {
-  socket.on("create-game", (arg) => handleCreateGame(io, socket, arg));
+  socket.on("create-game", (arg, callback) => handleCreateGame(io, socket, arg, callback));
   socket.on("join-game", (arg) => handleJoinGame(io, socket, arg));
   socket.on("choose-piece", (arg) => handleChoosePiece(io, socket, arg));
   socket.on("place-piece", (arg) => handlePlacePiece(io, socket, arg));

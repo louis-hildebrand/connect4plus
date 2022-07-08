@@ -52,7 +52,7 @@
               <div>Choose a display name:</div>
               <input
                 type="text"
-                v-model="player1Name"
+                v-model="hostDisplayName"
               >
             </div>
           </div>
@@ -90,7 +90,7 @@ export default {
         return {
             errorMsg: "",
             gameCodeInput: "",
-            player1Name: "",
+            hostDisplayName: "",
             player2Name: ""
         };
     },
@@ -117,19 +117,14 @@ export default {
             }
         },
         registerSocketListeners() {
-            this.$root.socket.on("game-created", this.handleGameCreated);
             this.$root.socket.on("game-not-found", this.handleGameNotFound);
             this.$root.socket.on("game-already-started", this.handleGameAlreadyStarted);
             this.$root.socket.on("game-started", this.handleGameStarted);
         },
         removeSocketListeners() {
-            this.$root.socket.off("game-created", this.handleGameCreated);
             this.$root.socket.off("game-not-found", this.handleGameNotFound);
             this.$root.socket.off("game-already-started", this.handleGameAlreadyStarted);
             this.$root.socket.off("game-started", this.handleGameStarted);
-        },
-        handleGameCreated(arg) {
-            this.$router.push({ name: "Lobby", params: { gameCode: arg.gameCode } });
         },
         handleGameAlreadyStarted(arg) {
             this.errorMsg = "That game has already started.";
@@ -139,14 +134,18 @@ export default {
         },
         handleGameStarted(arg) {
             this.$router.push({ name: "Game", params: {
-                    gameCode: this.gameCode,
-                    myNumber: 2,
-                    player1Name: arg.player1Name,
-                    player2Name: arg.player2Name
-                } });
+                gameCode: this.gameCode,
+                myNumber: 2,
+                player1Name: arg.player1Name,
+                player2Name: arg.player2Name
+            } });
         },
         createGame() {
-            this.$root.socket.emit("create-game", { player1Name: this.player1Name });
+            const arg = { displayName: this.hostDisplayName };
+            const callback = (response) => {
+                this.$router.push({ name: "Lobby", params: { gameCode: response.gameCode } });
+            };
+            this.$root.socket.emit("create-game", arg, callback);
         },
         joinGame() {
             if (this.gameCode) {
