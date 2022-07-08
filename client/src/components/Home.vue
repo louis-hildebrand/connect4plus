@@ -132,15 +132,12 @@ export default {
             this.$router.push({ name: "Lobby", params: { gameCode: arg.gameCode } });
         },
         handleGameAlreadyStarted(arg) {
-            console.log("Event 'game-already-started'.");
             this.errorMsg = "That game has already started.";
         },
         handleGameNotFound(arg) {
-            console.log("Event 'game-not-found'.");
             this.errorMsg = "There is no game with that code.";
         },
         handleGameStarted(arg) {
-            console.log(arg);
             this.$router.push({ name: "Game", params: {
                     gameCode: this.gameCode,
                     myNumber: 2,
@@ -149,12 +146,10 @@ export default {
                 } });
         },
         createGame() {
-            console.log("Creating a new game.");
             this.$root.socket.emit("create-game", { player1Name: this.player1Name });
         },
         joinGame() {
             if (this.gameCode) {
-                console.log(`Joining game '${this.gameCode}'.`);
                 this.$root.socket.emit("join-game", { gameCode: this.gameCode, player2Name: this.player2Name });
             }
             else {
