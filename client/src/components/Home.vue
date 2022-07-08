@@ -85,80 +85,80 @@
 import AppHeader from './AppHeader.vue';
 
 export default {
-    name: "Home",
-    data() {
-        return {
-            errorMsg: "",
-            gameCodeInput: "",
-            hostDisplayName: "",
-            player2Name: ""
-        };
+  name: "Home",
+  data() {
+      return {
+        errorMsg: "",
+        gameCodeInput: "",
+        hostDisplayName: "",
+        player2Name: ""
+      };
+  },
+  computed: {
+      gameCode() {
+        return this.gameCodeInput.toUpperCase();
+      }
+  },
+  created() {
+      this.registerSocketListeners();
+  },
+  unmounted() {
+      this.removeSocketListeners();
+  },
+  methods: {
+    ensureLetter(evt) {
+      const char = String.fromCharCode(evt.keyCode);
+      if (/[A-Za-z]/.test(char)) {
+        return true;
+      }
+      else {
+        evt.preventDefault();
+        return false;
+      }
     },
-    computed: {
-        gameCode() {
-            return this.gameCodeInput.toUpperCase();
-        }
+    registerSocketListeners() {
+      this.$root.socket.on("game-not-found", this.handleGameNotFound);
+      this.$root.socket.on("game-already-started", this.handleGameAlreadyStarted);
+      this.$root.socket.on("game-started", this.handleGameStarted);
     },
-    created() {
-        this.registerSocketListeners();
+    removeSocketListeners() {
+      this.$root.socket.off("game-not-found", this.handleGameNotFound);
+      this.$root.socket.off("game-already-started", this.handleGameAlreadyStarted);
+      this.$root.socket.off("game-started", this.handleGameStarted);
     },
-    unmounted() {
-        this.removeSocketListeners();
+    handleGameAlreadyStarted(arg) {
+      this.errorMsg = "That game has already started.";
     },
-    methods: {
-        ensureLetter(evt) {
-            const char = String.fromCharCode(evt.keyCode);
-            if (/[A-Za-z]/.test(char)) {
-                return true;
-            }
-            else {
-                evt.preventDefault();
-                return false;
-            }
-        },
-        registerSocketListeners() {
-            this.$root.socket.on("game-not-found", this.handleGameNotFound);
-            this.$root.socket.on("game-already-started", this.handleGameAlreadyStarted);
-            this.$root.socket.on("game-started", this.handleGameStarted);
-        },
-        removeSocketListeners() {
-            this.$root.socket.off("game-not-found", this.handleGameNotFound);
-            this.$root.socket.off("game-already-started", this.handleGameAlreadyStarted);
-            this.$root.socket.off("game-started", this.handleGameStarted);
-        },
-        handleGameAlreadyStarted(arg) {
-            this.errorMsg = "That game has already started.";
-        },
-        handleGameNotFound(arg) {
-            this.errorMsg = "There is no game with that code.";
-        },
-        handleGameStarted(arg) {
-            this.$router.push({ name: "Game", params: {
-                gameCode: this.gameCode,
-                myNumber: 2,
-                player1Name: arg.player1Name,
-                player2Name: arg.player2Name
-            } });
-        },
-        createGame() {
-            const arg = { displayName: this.hostDisplayName };
-            const callback = (response) => {
-                this.$router.push({ name: "Lobby", params: { gameCode: response.gameCode } });
-            };
-            this.$root.socket.emit("create-game", arg, callback);
-        },
-        joinGame() {
-            if (this.gameCode) {
-                this.$root.socket.emit("join-game", { gameCode: this.gameCode, player2Name: this.player2Name });
-            }
-            else {
-                this.errorMsg = "Please enter a game code.";
-            }
-        }
+    handleGameNotFound(arg) {
+      this.errorMsg = "There is no game with that code.";
     },
-    components: {
-      AppHeader
+    handleGameStarted(arg) {
+      this.$router.push({ name: "Game", params: {
+        gameCode: this.gameCode,
+        myNumber: 2,
+        player1Name: arg.player1Name,
+        player2Name: arg.player2Name
+      } });
+    },
+    createGame() {
+      const arg = { displayName: this.hostDisplayName };
+      const callback = (response) => {
+        this.$router.push({ name: "Lobby", params: { gameCode: response.gameCode } });
+      };
+      this.$root.socket.emit("create-game", arg, callback);
+    },
+    joinGame() {
+      if (this.gameCode) {
+        this.$root.socket.emit("join-game", { gameCode: this.gameCode, player2Name: this.player2Name });
+      }
+      else {
+        this.errorMsg = "Please enter a game code.";
+      }
     }
+  },
+  components: {
+    AppHeader
+  }
 };
 </script>
 
