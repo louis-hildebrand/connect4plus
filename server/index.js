@@ -15,6 +15,20 @@ const io = new Server(httpServer, {
   cors: { origin: "*" }
 });
 
+// Game state
+io.gameState = new Map();
+io.of("/").adapter.on("create-room", (room) => {
+  io.gameState.set(room, {
+    started: false
+  });
+  console.log(`Room '${room}' created.`);
+});
+io.of("/").adapter.on("delete-room", (room) => {
+  io.gameState.delete(room);
+  console.log(`Room '${room}' deleted.`);
+});
+
+// Event handlers
 io.on("connection", (socket) => {
   socket.on("create-game", (arg) => handleCreateGame(io, socket, arg));
   socket.on("join-game", (arg) => handleJoinGame(io, socket, arg));
