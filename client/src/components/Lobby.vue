@@ -10,6 +10,11 @@
       </h1>
       <div>Share it with a friend to start playing.</div>
     </div>
+    <div class="player-list">
+      <div v-for="(player, index) in players" :key="index">
+        {{ player.name }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -17,29 +22,47 @@
 import AppHeader from './AppHeader.vue';
 
 export default {
-    name: "Lobby",
-    props: [
-        "gameCode"
-    ],
-    created() {
-        this.registerSocketListeners();
+  name: "Lobby",
+  props: {
+    gameCode: String,
+    initialPlayers: Array
+  },
+  data() {
+    return {
+      players: []
+    };
+  },
+  created() {
+    this.players = this.initialPlayers.map(p => JSON.parse(p));
+    this.registerSocketListeners();
+  },
+  unmounted() {
+    this.removeSocketListeners();
+  },
+  methods: {
+    registerSocketListeners() {
+      this.$root.socket.on("game-started", this.handleGameStarted);
+      this.$root.socket.on("player-joined", this.handlePlayerJoined);
     },
-    methods: {
-        registerSocketListeners() {
-            this.$root.socket.on("game-started", this.handleGameStarted);
-        },
-        handleGameStarted(arg) {
-            this.$router.replace({ name: "Game", params: {
-                    gameCode: this.gameCode,
-                    myNumber: 1,
-                    player1Name: arg.player1Name,
-                    player2Name: arg.player2Name
-                } });
-        }
+    removeSocketListeners() {
+      this.$root.socket.off("game-started", this.handleGameStarted);
+      this.$root.socket.off("player-joined", this.handlePlayerJoined);
     },
-    components: {
-      AppHeader
+    handleGameStarted(arg) {
+      this.$router.replace({ name: "Game", params: {
+        gameCode: this.gameCode,
+        myNumber: 1,
+        player1Name: arg.player1Name,
+        player2Name: arg.player2Name
+      } });
+    },
+    handlePlayerJoined(arg) {
+      this.players.push(arg.player);
     }
+  },
+  components: {
+    AppHeader
+  }
 };
 </script>
 

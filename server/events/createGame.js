@@ -34,7 +34,7 @@ function handleCreateGame(io, socket, arg, callback) {
   socket.displayName = arg.displayName;
 
   // Let the client know what their game code is
-  callback({ gameCode: gameCode });
+  callback({ status: 200, gameCode: gameCode });
 }
 
 module.exports = handleCreateGame;

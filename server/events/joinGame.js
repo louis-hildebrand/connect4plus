@@ -1,25 +1,19 @@
-function handleJoinGame(io, socket, arg) {
-  const gameCode = arg.gameCode;
+function handleJoinGame(io, socket, arg, callback) {
+  const game = io.gameState.get(arg.gameCode);
 
-  // Check that the room exists
-  const existingRooms = io.sockets.adapter.rooms;
-  const roomMembers = existingRooms.get(gameCode);
-  if (roomMembers === undefined) {
-    io.to(socket.id).emit("game-not-found");
-    console.log(`Client '${socket.id}' attempted to join game '${gameCode}', but no matching room was found.`);
+  // Game exists
+  if (game === undefined) {
+    callback({ status: 404 });
     return;
   }
 
-  // Check that the room has exactly one person in it
-  if (roomMembers.size !== 1) {
-    io.to(socket.id).emit("game-already-started");
-    console.log(`Client '${socket.id}' attempted to join game '${gameCode}', but there were already two players.`);
+  // Game has not yet started
+  if (game.started) {
+    callback({ status: 409 });
     return;
   }
 
-  const roomHostId = roomMembers.values().next().value;
-  const roomHost = io.sockets.sockets.get(roomHostId);
-  console.log(typeof roomHost)
+  socket.displayName = arg.displayName;
 
   // Leave any existing rooms (except their personal room) and add them to the requested room
   socket.rooms.forEach(room => {
@@ -27,14 +21,18 @@ function handleJoinGame(io, socket, arg) {
       socket.leave(room);
     }
   });
-  socket.join(gameCode);
+  socket.join(arg.gameCode);
 
-  console.log(`Client '${socket.id}' joined room '${gameCode}'.`);
+  socket.to(arg.gameCode).emit("player-joined", {
+    player: { id: socket.id, name: arg.displayName }
+  });
 
-  // Alert both players that the game can start
-  io.to(gameCode).emit("game-started", {player1Name: roomHost.displayName, player2Name: arg.player2Name});
-
-  console.log(`Game '${gameCode}' started.`);
+  const roomMembers = io.sockets.adapter.rooms.get(arg.gameCode);
+  const players = Array.from(roomMembers).map((id) => {
+    const name = io.sockets.sockets.get(id).displayName;
+    return {id: id, name: name};
+  });
+  callback({ status: 200, players: players });
 }
 
 module.exports = handleJoinGame;

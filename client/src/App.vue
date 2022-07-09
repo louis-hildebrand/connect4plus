@@ -26,6 +26,9 @@ export default {
     this.socket.on("connect", () => {
       console.log(`Connected to the server (URL: ${config.backendUrl}).`);
     });
+    this.socket.onAny((event, ...args) => {
+      console.log(`Event '${event}'.`);
+    });
 
     this.$router.replace({ name: "Home" });
   }

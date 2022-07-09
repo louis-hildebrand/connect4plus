@@ -24,7 +24,7 @@
               <div>Choose a display name:</div>
               <input
                 type="text"
-                v-model="player2Name"
+                v-model="guestDisplayName"
               >
             </div>
             <p v-if="errorMsg" style="color: red;">{{errorMsg}}</p>
@@ -33,7 +33,7 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               Cancel
             </button>
-            <button type="button" class="btn btn-primary" @click="joinGame">
+            <button type="button" class="btn btn-primary" @click="joinGame" :disabled="joinGameButtonDisabled">
               Join game
             </button>
           </div>
@@ -60,7 +60,7 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               Cancel
             </button>
-            <button type="button" class="btn btn-primary" @click="createGame">
+            <button type="button" class="btn btn-primary" @click="createGame" :disabled="createGameButtonDisabled">
               Create game
             </button>
           </div>
@@ -87,23 +87,23 @@ import AppHeader from './AppHeader.vue';
 export default {
   name: "Home",
   data() {
-      return {
-        errorMsg: "",
-        gameCodeInput: "",
-        hostDisplayName: "",
-        player2Name: ""
-      };
+    return {
+      errorMsg: "",
+      gameCodeInput: "",
+      hostDisplayName: "",
+      guestDisplayName: ""
+    };
   },
   computed: {
-      gameCode() {
-        return this.gameCodeInput.toUpperCase();
-      }
-  },
-  created() {
-      this.registerSocketListeners();
-  },
-  unmounted() {
-      this.removeSocketListeners();
+    gameCode() {
+      return this.gameCodeInput.toUpperCase();
+    },
+    createGameButtonDisabled() {
+      return !this.hostDisplayName;
+    },
+    joinGameButtonDisabled() {
+      return !this.gameCodeInput || !this.guestDisplayName;
+    }
   },
   methods: {
     ensureLetter(evt) {
@@ -116,40 +116,47 @@ export default {
         return false;
       }
     },
-    registerSocketListeners() {
-      this.$root.socket.on("game-not-found", this.handleGameNotFound);
-      this.$root.socket.on("game-already-started", this.handleGameAlreadyStarted);
-      this.$root.socket.on("game-started", this.handleGameStarted);
-    },
-    removeSocketListeners() {
-      this.$root.socket.off("game-not-found", this.handleGameNotFound);
-      this.$root.socket.off("game-already-started", this.handleGameAlreadyStarted);
-      this.$root.socket.off("game-started", this.handleGameStarted);
-    },
-    handleGameAlreadyStarted(arg) {
-      this.errorMsg = "That game has already started.";
-    },
-    handleGameNotFound(arg) {
-      this.errorMsg = "There is no game with that code.";
-    },
-    handleGameStarted(arg) {
-      this.$router.push({ name: "Game", params: {
-        gameCode: this.gameCode,
-        myNumber: 2,
-        player1Name: arg.player1Name,
-        player2Name: arg.player2Name
-      } });
-    },
     createGame() {
       const arg = { displayName: this.hostDisplayName };
       const callback = (response) => {
-        this.$router.push({ name: "Lobby", params: { gameCode: response.gameCode } });
+        switch (response.status) {
+          case 200:
+            const hostPlayer = { id: this.$root.socket.id, name: this.hostDisplayName };
+            this.$router.push({ name: "Lobby", params: {
+              gameCode: response.gameCode,
+              initialPlayers: [JSON.stringify(hostPlayer)]
+            } });
+            break;
+          default:
+            // TODO
+            break;
+        }
       };
       this.$root.socket.emit("create-game", arg, callback);
     },
     joinGame() {
       if (this.gameCode) {
-        this.$root.socket.emit("join-game", { gameCode: this.gameCode, player2Name: this.player2Name });
+        const arg = { gameCode: this.gameCode, displayName: this.guestDisplayName };
+        const callback = (response) => {
+          switch (response.status) {
+            case 200:
+              this.$router.push({ name: "Lobby", params: {
+                gameCode: this.gameCode,
+                initialPlayers: response.players.map(p => JSON.stringify(p))
+              } });
+              break;
+            case 404:
+              this.errorMsg = "There is no game with that code.";
+              break;
+            case 409:
+              this.errorMsg = "That game has already started.";
+              break;
+            default:
+              this.errorMsg = "An unexpected error occurred. Please refresh the page and try again.";
+              break;
+          }
+        };
+        this.$root.socket.emit("join-game", arg, callback);
       }
       else {
         this.errorMsg = "Please enter a game code.";
@@ -199,6 +206,10 @@ header {
   background-color: var(--color-light-highlight);
   border-color: var(--color-light-highlight);
   box-shadow: 0 0 0 0.2rem var(--color-light-main);
+}
+.btn-primary:disabled {
+  background-color: slategrey;
+  border-color: slategrey;
 }
 
 .modal-content-row {
