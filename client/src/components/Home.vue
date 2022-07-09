@@ -124,7 +124,8 @@ export default {
             const hostPlayer = { id: this.$root.socket.id, name: this.hostDisplayName };
             this.$router.push({ name: "Lobby", params: {
               gameCode: response.gameCode,
-              initialPlayers: [JSON.stringify(hostPlayer)]
+              initialPlayers: [JSON.stringify(hostPlayer)],
+              amInitialHost: true
             } });
             break;
           default:
@@ -142,7 +143,8 @@ export default {
             case 200:
               this.$router.push({ name: "Lobby", params: {
                 gameCode: this.gameCode,
-                initialPlayers: response.players.map(p => JSON.stringify(p))
+                initialPlayers: response.players.map(p => JSON.stringify(p)),
+                amInitialHost: false
               } });
               break;
             case 404:

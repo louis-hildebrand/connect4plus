@@ -17,6 +17,10 @@ function newGameCode(disallowed) {
   }
 }
 
+function isGameCode(input) {
+  return input.length === 6;
+}
+
 function handleCreateGame(io, socket, arg, callback) {
   // Leave any existing rooms (except their personal room)
   socket.rooms.forEach(room => {
@@ -37,4 +41,7 @@ function handleCreateGame(io, socket, arg, callback) {
   callback({ status: 200, gameCode: gameCode });
 }
 
-module.exports = handleCreateGame;
+module.exports = {
+  handleCreateGame,
+  isGameCode
+};

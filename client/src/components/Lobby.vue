@@ -7,7 +7,7 @@
       <strong>{{ gameCode }}</strong>
     </h1>
     <div>Share this game code with a friend to start playing.</div>
-    <button type="button" class="btn btn-primary" @click="startGame" :disabled="startGameButtonDisabled">
+    <button type="button" class="btn btn-primary" v-if="amHost" @click="startGame" :disabled="startGameButtonDisabled">
       Start game
     </button>
     <div class="player-list">
@@ -26,7 +26,8 @@ export default {
   name: "Lobby",
   props: {
     gameCode: String,
-    initialPlayers: Array
+    initialPlayers: Array,
+    amInitialHost: String  // The Vue router insists on converting the boolean value to a string >>:(
   },
   computed: {
     startGameButtonDisabled() {
@@ -35,11 +36,11 @@ export default {
   },
   data() {
     return {
-      players: []
+      players: this.initialPlayers.map(p => JSON.parse(p)),
+      amHost: this.amInitialHost === "true"
     };
   },
   created() {
-    this.players = this.initialPlayers.map(p => JSON.parse(p));
     this.registerSocketListeners();
   },
   unmounted() {
@@ -54,12 +55,24 @@ export default {
       this.$root.socket.off("game-started", this.handleGameStarted);
       this.$root.socket.off("player-joined", this.handlePlayerJoined);
     },
+    startGame() {
+      const arg = { gameCode: this.gameCode };
+      const callback = (response) => {
+        switch (response.status) {
+          case 200:
+            this.handleGameStarted(response);
+            break;
+          default:
+            // TODO
+            break;
+        }
+      };
+      this.$root.socket.emit("start-game", arg, callback);
+    },
     handleGameStarted(arg) {
       this.$router.replace({ name: "Game", params: {
         gameCode: this.gameCode,
-        myNumber: 1,
-        player1Name: arg.player1Name,
-        player2Name: arg.player2Name
+        initialPlayers: this.players.map(p => JSON.stringify(p))
       } });
     },
     handlePlayerJoined(arg) {

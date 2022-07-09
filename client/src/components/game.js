@@ -1,36 +1,4 @@
 // -----------------------------------------------------------------------------
-// Data
-// -----------------------------------------------------------------------------
-const data = {
-  gameOverWin: false,
-  gameOverTie: false,
-  currentPlayer: 1,
-  placingPiece: false,
-  playingBoard: Array(16).fill(null),
-  playingBoardHighlight: [],
-  availablePieces: [
-    {color: "dark",  shape: "square", mark: "o", border: "thick"},
-    {color: "dark",  shape: "square", mark: "o", border: "thin"},
-    {color: "dark",  shape: "circle", mark: "o", border: "thin"},
-    {color: "dark",  shape: "circle", mark: "o", border: "thick"},
-    {color: "dark",  shape: "square", mark: "x", border: "thick"},
-    {color: "dark",  shape: "square", mark: "x", border: "thin"},
-    {color: "dark",  shape: "circle", mark: "x", border: "thin"},
-    {color: "dark",  shape: "circle", mark: "x", border: "thick"},
-    {color: "light", shape: "square", mark: "x", border: "thick"},
-    {color: "light", shape: "square", mark: "x", border: "thin"},
-    {color: "light", shape: "circle", mark: "x", border: "thin"},
-    {color: "light", shape: "circle", mark: "x", border: "thick"},
-    {color: "light", shape: "square", mark: "o", border: "thick"},
-    {color: "light", shape: "square", mark: "o", border: "thin"},
-    {color: "light", shape: "circle", mark: "o", border: "thin"},
-    {color: "light", shape: "circle", mark: "o", border: "thick"}
-  ],
-  availablePiecesHighlight: [],
-  selectedPiece: null
-};
-
-// -----------------------------------------------------------------------------
 // Computed properties
 // -----------------------------------------------------------------------------
 function gameOver() {
@@ -228,14 +196,40 @@ import AppHeader from './AppHeader.vue';
 
 export default {
   name: "Game",
-  props: [
-    "gameCode",
-    "myNumber",
-    "player1Name",
-    "player2Name"
-  ],
+  props: {
+    gameCode: String,
+    initialPlayers: Array
+  },
   data() {
-    return data;
+    return {
+      players: this.initialPlayers.map(p => JSON.parse(p)),
+      gameOverWin: false,
+      gameOverTie: false,
+      currentPlayer: 1,
+      placingPiece: false,
+      playingBoard: Array(16).fill(null),
+      playingBoardHighlight: [],
+      availablePieces: [
+        {color: "dark",  shape: "square", mark: "o", border: "thick"},
+        {color: "dark",  shape: "square", mark: "o", border: "thin"},
+        {color: "dark",  shape: "circle", mark: "o", border: "thin"},
+        {color: "dark",  shape: "circle", mark: "o", border: "thick"},
+        {color: "dark",  shape: "square", mark: "x", border: "thick"},
+        {color: "dark",  shape: "square", mark: "x", border: "thin"},
+        {color: "dark",  shape: "circle", mark: "x", border: "thin"},
+        {color: "dark",  shape: "circle", mark: "x", border: "thick"},
+        {color: "light", shape: "square", mark: "x", border: "thick"},
+        {color: "light", shape: "square", mark: "x", border: "thin"},
+        {color: "light", shape: "circle", mark: "x", border: "thin"},
+        {color: "light", shape: "circle", mark: "x", border: "thick"},
+        {color: "light", shape: "square", mark: "o", border: "thick"},
+        {color: "light", shape: "square", mark: "o", border: "thin"},
+        {color: "light", shape: "circle", mark: "o", border: "thin"},
+        {color: "light", shape: "circle", mark: "o", border: "thick"}
+      ],
+      availablePiecesHighlight: [],
+      selectedPiece: null
+    };
   },
   computed: {
     gameOver,
