@@ -193,25 +193,6 @@ header {
   align-self: center;
 }
 
-.btn-primary {
-  background-color: var(--color-light-main);
-  border-color: var(--color-light-main);
-  box-shadow: none;
-}
-.btn-primary:hover {
-  background-color: var(--color-light-highlight);
-  border-color: var(--color-light-highlight);
-}
-.btn-primary:focus, .btn-primary:active, .btn-primary:focus:active, .btn-primary:focus-visible {
-  background-color: var(--color-light-highlight);
-  border-color: var(--color-light-highlight);
-  box-shadow: 0 0 0 0.2rem var(--color-light-main);
-}
-.btn-primary:disabled {
-  background-color: slategrey;
-  border-color: slategrey;
-}
-
 .modal-content-row {
   display: flex;
   flex-wrap: wrap;

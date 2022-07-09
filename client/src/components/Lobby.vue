@@ -3,13 +3,13 @@
     <header>
       <AppHeader />
     </header>
-    <div class="game-code-message-container">
-      <div>Your game code is</div>
-      <h1 class="game-code">
-        <strong>{{ gameCode }}</strong>
-      </h1>
-      <div>Share it with a friend to start playing.</div>
-    </div>
+    <h1 class="game-code">
+      <strong>{{ gameCode }}</strong>
+    </h1>
+    <div>Share this game code with a friend to start playing.</div>
+    <button type="button" class="btn btn-primary" @click="startGame" :disabled="startGameButtonDisabled">
+      Start game
+    </button>
     <div class="player-list">
       <h5>Players</h5>
       <div v-for="(player, index) in players" :key="index">
@@ -27,6 +27,11 @@ export default {
   props: {
     gameCode: String,
     initialPlayers: Array
+  },
+  computed: {
+    startGameButtonDisabled() {
+      return this.players.length < 2;
+    }
   },
   data() {
     return {
@@ -81,17 +86,10 @@ header {
   width: 100%;
 }
 
-.game-code-message-container {
-  height: 75%;
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-}
-
 .game-code {
   border: 2px var(--color-outline-dark, black) solid;
   background-color: lightgrey;
+  width: 7em;
   padding: 15px;
   margin: 20px;
   font: xx-large;
