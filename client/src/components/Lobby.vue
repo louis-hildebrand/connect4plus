@@ -11,6 +11,7 @@
       <div>Share it with a friend to start playing.</div>
     </div>
     <div class="player-list">
+      <h5>Players</h5>
       <div v-for="(player, index) in players" :key="index">
         {{ player.name }}
       </div>
