@@ -28,6 +28,7 @@ export default {
     });
     this.socket.onAny((event, ...args) => {
       console.log(`Event '${event}'.`);
+      console.log(args);
     });
 
     this.$router.replace({ name: "Home" });
