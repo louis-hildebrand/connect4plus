@@ -3,11 +3,11 @@
     <header>
       <AppHeader>
         <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" id="current-player-btn" type="button" data-bs-toggle="dropdown">
             {{ currentPlayer.name }}
           </button>
           <ul class="dropdown-menu">
-            <li v-for="player in players" :key="player.id">
+            <li class="player-name" v-for="player in players" :key="player.id">
               {{ player.name }}
             </li>
           </ul>
@@ -54,11 +54,15 @@
   flex-direction: column;
 }
 
+.dropdown-menu {
+  min-width: 1rem;
+}
+#current-player-btn {
+  margin: 5px;
+}
 .player-name {
-  padding: 5px 10px 5px 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  padding: 0px 10px 0px 10px;
+  text-align: right;
 }
 
 .msg {
