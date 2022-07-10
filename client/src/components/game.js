@@ -1,68 +1,51 @@
 // -----------------------------------------------------------------------------
-// Data
-// -----------------------------------------------------------------------------
-const data = {
-  gameOverWin: false,
-  gameOverTie: false,
-  currentPlayer: 1,
-  placingPiece: false,
-  playingBoard: Array(16).fill(null),
-  playingBoardHighlight: [],
-  availablePieces: [
-    {color: "dark",  shape: "square", mark: "o", border: "thick"},
-    {color: "dark",  shape: "square", mark: "o", border: "thin"},
-    {color: "dark",  shape: "circle", mark: "o", border: "thin"},
-    {color: "dark",  shape: "circle", mark: "o", border: "thick"},
-    {color: "dark",  shape: "square", mark: "x", border: "thick"},
-    {color: "dark",  shape: "square", mark: "x", border: "thin"},
-    {color: "dark",  shape: "circle", mark: "x", border: "thin"},
-    {color: "dark",  shape: "circle", mark: "x", border: "thick"},
-    {color: "light", shape: "square", mark: "x", border: "thick"},
-    {color: "light", shape: "square", mark: "x", border: "thin"},
-    {color: "light", shape: "circle", mark: "x", border: "thin"},
-    {color: "light", shape: "circle", mark: "x", border: "thick"},
-    {color: "light", shape: "square", mark: "o", border: "thick"},
-    {color: "light", shape: "square", mark: "o", border: "thin"},
-    {color: "light", shape: "circle", mark: "o", border: "thin"},
-    {color: "light", shape: "circle", mark: "o", border: "thick"}
-  ],
-  availablePiecesHighlight: [],
-  selectedPiece: null
-};
-
-// -----------------------------------------------------------------------------
 // Computed properties
 // -----------------------------------------------------------------------------
+function currentPlayer() {
+  return this.getPlayerById(this.currentPlayerId);
+}
+
 function gameOver() {
   return this.gameOverWin || this.gameOverTie;
 }
 
+function isMyTurn() {
+  return this.$root.socket.id === this.currentPlayerId;
+}
+
 function message() {
-  const myNumber = this.myNumber * 1;
-  if (this.gameOverWin && myNumber === this.currentPlayer) {
+  if (this.gameOverWin && this.isMyTurn) {
     return "Game over. You win!";
   }
-  else if (this.gameOverWin && myNumber !== this.currentPlayer) {
+  else if (this.gameOverWin && !this.isMyTurn) {
     return "Game over. You lose.";
   }
   else if (this.gameOverTie) {
     return "Game over. Tie.";
   }
-  if (myNumber === this.currentPlayer && this.placingPiece) {
+  else if (this.isMyTurn && this.placingPiece) {
     return "Choose where to place the piece.";
   }
-  else if (myNumber === this.currentPlayer && !this.placingPiece) {
-    return "Choose a piece for your opponent.";
+  else if (this.isMyTurn && !this.placingPiece) {
+    return `Choose a piece for ${this.nextPlayerName}.`;
   }
-  else if (myNumber !== this.currentPlayer && this.placingPiece) {
-    return "Waiting for opponent's move...";
+  else if (!this.isMyTurn && this.placingPiece) {
+    return `Waiting for ${this.getPlayerById(this.currentPlayerId).name}'s move...`;
   }
-  else if (myNumber !== this.currentPlayer && !this.placingPiece) {
-    return "Waiting for opponent's move...";
+  else if (!this.isMyTurn && !this.placingPiece) {
+    return `Waiting for ${this.getPlayerById(this.currentPlayerId).name}'s move...`;
   }
   else {
     return "Invalid state. Please refresh the page.";
   }
+}
+
+function nextPlayerName() {
+  const currentIndex = this.players.indexOf(this.getPlayerById(this.currentPlayerId));
+
+  const nextIndex = (currentIndex + 1) % this.players.length;
+
+  return this.players[nextIndex].name;
 }
 
 // -----------------------------------------------------------------------------
@@ -135,10 +118,6 @@ function advanceGameState() {
     return;
   }
 
-  this.currentPlayer = this.placingPiece
-    ? this.currentPlayer
-    : (this.currentPlayer % 2) + 1;
-
   this.placingPiece = !this.placingPiece;
 }
 
@@ -151,7 +130,7 @@ function cellBackgroundStyle(isPlayingBoard, index) {
 
 function choosePiece(index) {
   if (this.gameOver) return;
-  if (this.myNumber * 1 !== this.currentPlayer) return;
+  if (!this.isMyTurn) return;
   if (this.placingPiece) return;
   if (!this.availablePieces[index]) return;
   if (!this.availablePiecesHighlight.some(x => x === index)) {
@@ -161,20 +140,35 @@ function choosePiece(index) {
 
   this.availablePiecesHighlight = [];
 
-  this.$root.socket.emit("choose-piece", {gameCode: this.gameCode, piece: index});
-
-  this.handlePieceChosen(index);
+  const arg = {gameCode: this.gameCode, index: index};
+  const callback = (response) => {
+    switch (response.status) {
+      case 200:
+        this.handlePieceChosen(response);
+        break;
+      default:
+        // TODO
+        break;
+    }
+  };
+  this.$root.socket.emit("choose-piece", arg, callback);
 }
 
-function handlePieceChosen(index) {
-  this.selectedPiece = this.availablePieces[index];
-  this.availablePieces[index] = null;
+function getPlayerById(id) {
+  return this.players.filter(p => p.id === id)[0];
+}
+
+function handlePieceChosen(arg) {
+  this.selectedPiece = this.availablePieces[arg.index];
+  this.availablePieces[arg.index] = null;
+
+  this.currentPlayerId = arg.currentPlayerId;
 
   this.advanceGameState();
 }
 
-function handlePiecePlaced(index) {
-  this.playingBoard[index] = this.selectedPiece;
+function handlePiecePlaced(arg) {
+  this.playingBoard[arg.index] = this.selectedPiece;
   this.selectedPiece = null;
 
   this.advanceGameState();
@@ -187,7 +181,7 @@ function image(piece) {
 
 function placePiece(index) {
   if (this.gameOver) return;
-  if (this.myNumber * 1 !== this.currentPlayer) return;
+  if (!this.isMyTurn) return;
   if (!this.placingPiece) return;
   if (this.playingBoard[index]) return;
   if (!this.playingBoardHighlight.some(x => x === index)) {
@@ -197,9 +191,18 @@ function placePiece(index) {
 
   this.playingBoardHighlight = [];
 
-  this.$root.socket.emit("place-piece", {gameCode: this.gameCode, piece: index});
-
-  this.handlePiecePlaced(index);
+  const arg = {gameCode: this.gameCode, index: index};
+  const callback = (response) => {
+    switch (response.status) {
+      case 200:
+        this.handlePiecePlaced(response);
+        break;
+      default:
+        // TODO
+        break;
+    }
+  };
+  this.$root.socket.emit("place-piece", arg, callback);
 }
 
 function playerNameStyle(player) {
@@ -228,18 +231,48 @@ import AppHeader from './AppHeader.vue';
 
 export default {
   name: "Game",
-  props: [
-    "gameCode",
-    "myNumber",
-    "player1Name",
-    "player2Name"
-  ],
+  props: {
+    gameCode: String,
+    initialPlayers: Array,
+    initialCurrentPlayerId: String
+  },
   data() {
-    return data;
+    return {
+      players: this.initialPlayers.map(p => JSON.parse(p)),
+      currentPlayerId: this.initialCurrentPlayerId,
+      gameOverWin: false,
+      gameOverTie: false,
+      placingPiece: false,
+      playingBoard: Array(16).fill(null),
+      playingBoardHighlight: [],
+      availablePieces: [
+        {color: "dark",  shape: "square", mark: "o", border: "thick"},
+        {color: "dark",  shape: "square", mark: "o", border: "thin"},
+        {color: "dark",  shape: "circle", mark: "o", border: "thin"},
+        {color: "dark",  shape: "circle", mark: "o", border: "thick"},
+        {color: "dark",  shape: "square", mark: "x", border: "thick"},
+        {color: "dark",  shape: "square", mark: "x", border: "thin"},
+        {color: "dark",  shape: "circle", mark: "x", border: "thin"},
+        {color: "dark",  shape: "circle", mark: "x", border: "thick"},
+        {color: "light", shape: "square", mark: "x", border: "thick"},
+        {color: "light", shape: "square", mark: "x", border: "thin"},
+        {color: "light", shape: "circle", mark: "x", border: "thin"},
+        {color: "light", shape: "circle", mark: "x", border: "thick"},
+        {color: "light", shape: "square", mark: "o", border: "thick"},
+        {color: "light", shape: "square", mark: "o", border: "thin"},
+        {color: "light", shape: "circle", mark: "o", border: "thin"},
+        {color: "light", shape: "circle", mark: "o", border: "thick"}
+      ],
+      availablePiecesHighlight: [],
+      selectedPiece: null
+    };
   },
   computed: {
+    currentPlayer,
     gameOver,
-    message
+    isMyTurn,
+    message,
+    nextPlayerName
   },
   created() {
     this.registerSocketListeners();
@@ -248,6 +281,7 @@ export default {
     this.removeSocketListeners();
   },
   methods: {
+    getPlayerById,
     registerSocketListeners,
     removeSocketListeners,
     image,

@@ -2,15 +2,15 @@
   <div class="component-content">
     <header>
       <AppHeader>
-        <div class="player-name" :style="playerNameStyle(1)">
-          <span class="player-name-text">
-            {{ player1Name ? `${player1Name} (host)` : "Host" }}
-          </span>
-        </div>
-        <div class="player-name" :style="playerNameStyle(2)">
-          <span class="player-name-text">
-            {{ player2Name ? `${player2Name} (guest)` : "Guest" }}
-          </span>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" id="current-player-btn" type="button" data-bs-toggle="dropdown">
+            {{ currentPlayer.name }}
+          </button>
+          <ul class="dropdown-menu">
+            <li class="player-name" v-for="player in players" :key="player.id">
+              {{ player.name }}
+            </li>
+          </ul>
         </div>
       </AppHeader>
     </header>
@@ -54,11 +54,15 @@
   flex-direction: column;
 }
 
+.dropdown-menu {
+  min-width: 1rem;
+}
+#current-player-btn {
+  margin: 5px;
+}
 .player-name {
   padding: 5px 10px 5px 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  text-align: right;
 }
 
 .msg {

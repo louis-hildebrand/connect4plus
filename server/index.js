@@ -1,31 +1,19 @@
-const config = require("config");
-const express = require("express");
-const { createServer } = require("http");
-const { Server } = require("socket.io");
+const io = require("./io.js");
 
-const handleChoosePiece = require("./events/choosePiece.js");
-const handleCreateGame = require("./events/createGame.js");
-const handleDisconnect = require("./events/disconnect.js");
-const handleJoinGame = require("./events/joinGame.js");
-const handlePlacePiece = require("./events/placePiece.js");
+const clientManager = require("./events/clientManager.js");
+const roomManager = require("./events/roomManager.js");
 
-const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: { origin: "*" }
-});
-
+// Client events
 io.on("connection", (socket) => {
-  socket.on("create-game", (arg) => handleCreateGame(io, socket, arg));
-  socket.on("join-game", (arg) => handleJoinGame(io, socket, arg));
-  socket.on("choose-piece", (arg) => handleChoosePiece(io, socket, arg));
-  socket.on("place-piece", (arg) => handlePlacePiece(io, socket, arg));
-  socket.on("disconnect", (reason) => handleDisconnect(io, socket, reason));
-
-  console.log(`Client '${socket.id}' connected.`);
+  socket.on("choose-piece", (arg, callback) => clientManager.handleChoosePiece(io, socket, arg, callback));
+  socket.on("create-game", (arg, callback) => clientManager.handleCreateGame(io, socket, arg, callback));
+  socket.on("disconnect", (reason) => clientManager.handleDisconnect(io, socket, reason));
+  socket.on("join-game", (arg, callback) => clientManager.handleJoinGame(io, socket, arg, callback));
+  socket.on("place-piece", (arg, callback) => clientManager.handlePlacePiece(io, socket, arg, callback));
+  socket.on("start-game", (arg, callback) => clientManager.handleStartGame(io, socket, arg, callback));
 });
 
-const port = process.env.PORT || config.get("server.port");
-httpServer.listen(port, () => {
-  console.log(`Listening on port ${port}.`);
-});
+// Room events
+io.of("/").adapter.on("create-room", roomManager.handleCreateRoom);
+io.of("/").adapter.on("join-room", roomManager.handleJoinRoom);
+io.of("/").adapter.on("delete-room", roomManager.handleDeleteRoom);
