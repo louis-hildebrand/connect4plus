@@ -27,17 +27,25 @@ function message() {
     return "Choose where to place the piece.";
   }
   else if (this.isMyTurn && !this.placingPiece) {
-    return "Choose a piece for your opponent.";
+    return `Choose a piece for ${this.nextPlayerName}.`;
   }
   else if (!this.isMyTurn && this.placingPiece) {
-    return "Waiting for opponent's move...";
+    return `Waiting for ${this.getPlayerById(this.currentPlayerId).name}'s move...`;
   }
   else if (!this.isMyTurn && !this.placingPiece) {
-    return "Waiting for opponent's move...";
+    return `Waiting for ${this.getPlayerById(this.currentPlayerId).name}'s move...`;
   }
   else {
     return "Invalid state. Please refresh the page.";
   }
+}
+
+function nextPlayerName() {
+  const currentIndex = this.players.indexOf(this.getPlayerById(this.currentPlayerId));
+
+  const nextIndex = (currentIndex + 1) % this.players.length;
+
+  return this.players[nextIndex].name;
 }
 
 // -----------------------------------------------------------------------------
@@ -260,10 +268,11 @@ export default {
     };
   },
   computed: {
+    currentPlayer,
     gameOver,
     isMyTurn,
     message,
-    currentPlayer
+    nextPlayerName
   },
   created() {
     this.registerSocketListeners();
