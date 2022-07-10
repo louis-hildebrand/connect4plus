@@ -21,7 +21,7 @@
     "socket.io-client": "^4.5.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "webpack": "4.46"
+    "webpack": "4.39"
   },
   "devDependencies": {
     "@vue/cli-plugin-router": "~4.5.15",
