@@ -72,7 +72,8 @@ export default {
     handleGameStarted(arg) {
       this.$router.replace({ name: "Game", params: {
         gameCode: this.gameCode,
-        initialPlayers: this.players.map(p => JSON.stringify(p))
+        initialPlayers: this.players.map(p => JSON.stringify(p)),
+        initialCurrentPlayerId: arg.currentPlayerId
       } });
     },
     handlePlayerJoined(arg) {

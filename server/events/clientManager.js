@@ -3,11 +3,11 @@ const utils = require("../utils.js");
 function handleChoosePiece(io, socket, arg, callback) {
   // TODO: Check that the correct player is making the request
 
-  const currentPlayerId = "";
+  const currentPlayerId = utils.nextTurn(arg.gameCode);
 
   socket.to(arg.gameCode).emit("piece-chosen", { index: arg.index, currentPlayerId: currentPlayerId });
 
-  callback({ status: 200, index: arg.piece, currentPlayerId: currentPlayerId });
+  callback({ status: 200, index: arg.index, currentPlayerId: currentPlayerId });
 }
 
 function handleCreateGame(io, socket, arg, callback) {
@@ -81,21 +81,21 @@ function handlePlacePiece(io, socket, arg, callback) {
 
 function handleStartGame(io, socket, arg, callback) {
   // Check that the person starting the game is the host
-  if (io.gameState.get(arg.gameCode).host !== socket.id) {
+  if (utils.getHostId(arg.gameCode) !== socket.id) {
     callback({ status: 403 });
     return;
   }
 
   // Check that there are at least 2 players
-  const roomMembers = io.sockets.adapter.rooms.get(arg.gameCode);
+  const roomMembers = utils.getPlayerIds(arg.gameCode);
   if (roomMembers.size < 2) {
     callback({ status: 400 });
     return;
   }
 
-  io.gameState.get(arg.gameCode).started = true;
+  utils.setGameStarted(arg.gameCode);
 
-  const currentPlayerId = socket.id;
+  const currentPlayerId = utils.nextTurn(arg.gameCode);
 
   socket.to(arg.gameCode).emit("game-started", { currentPlayerId: currentPlayerId });
 
