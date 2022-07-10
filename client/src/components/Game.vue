@@ -61,7 +61,7 @@
   margin: 5px;
 }
 .player-name {
-  padding: 0px 10px 0px 10px;
+  padding: 5px 10px 5px 10px;
   text-align: right;
 }
 

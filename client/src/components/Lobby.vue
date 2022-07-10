@@ -1,21 +1,35 @@
 <template>
   <div class="component-content">
     <header>
-      <AppHeader />
+      <AppHeader>
+        <button
+        type="button"
+        class="btn btn-primary"
+        id="start-game-btn"
+        v-if="amHost"
+        @click="startGame"
+        :disabled="startGameButtonDisabled"
+      >
+        Start game
+      </button>
+      </AppHeader>
     </header>
-    <h1 class="game-code">
-      <strong>{{ gameCode }}</strong>
-    </h1>
-    <div>Share this game code with a friend to start playing.</div>
-    <button type="button" class="btn btn-primary" v-if="amHost" @click="startGame" :disabled="startGameButtonDisabled">
-      Start game
-    </button>
-    <div class="player-list">
-      <h5>Players</h5>
-      <div v-for="(player, index) in players" :key="index">
-        {{ player.name }}
+    <div class="component-body">
+      <div class="game-code-container">
+        <div>Your game code is</div>
+        <h1 class="game-code">
+          <strong>{{ gameCode }}</strong>
+        </h1>
       </div>
-    </div>
+      <div class="player-list-container">
+        <h3><b>Players</b></h3>
+        <div class="player-list">
+          <div v-for="(player, index) in players" :key="index">
+            {{ player.name }}
+          </div>
+        </div>
+      </div>
+    </div>  
   </div>
 </template>
 
@@ -91,21 +105,58 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  row-gap: 20px;
-  font: x-large;
 }
 
 header {
   width: 100%;
 }
 
+#start-game-btn {
+  margin: 5px;
+}
+
+.component-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
+  row-gap: 30px;
+  font: x-large;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.game-code-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .game-code {
   border: 2px var(--color-outline-dark, black) solid;
   background-color: lightgrey;
   width: 7em;
-  padding: 15px;
-  margin: 20px;
+  padding: 10px;
+  margin: 10px;
   font: xx-large;
+}
+
+.player-list-container {
+  width: 100%;
+}
+
+.player-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 20px;
+  justify-content: center;
+  width: 80%;
+  padding: 10px;
 }
 </style>
