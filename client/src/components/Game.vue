@@ -4,11 +4,11 @@
       <AppHeader>
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" id="current-player-btn" type="button" data-bs-toggle="dropdown">
-            {{ currentPlayer.name }}
+            {{ playerNames.get(gameState.currentPlayerId) }}
           </button>
           <ul class="dropdown-menu">
-            <li class="player-name" v-for="player in players" :key="player.id">
-              {{ player.name }}
+            <li class="player-name" v-for="id in gameState.playerIds" :key="id" :style="stylePlayerName(id)">
+              {{ playerNames.get(id) }}
             </li>
           </ul>
         </div>
@@ -17,24 +17,24 @@
     <div class="msg">{{ message }}</div>
     <div class="game-content">
       <div class="single-cell">
-        <img v-if="selectedPiece" :src="image(selectedPiece)" />
+        <img v-if="gameState.selectedPiece" :src="image(gameState.selectedPiece)" />
       </div>
       <div class="grid" id="playing-board">
         <div class="cell"
-          v-for="(piece, index) in playingBoard"
+          v-for="(piece, index) in gameState.playingBoard"
           :key="index"
-          @click="placePiece(index)"
-          :style="cellBackgroundStyle(true, index)"
+          @click="eventPlacePiece(index)"
+          :style="styleCellBackground(true, index)"
         >
           <img v-if="piece" :src="image(piece)" />
         </div>
       </div>
       <div class="grid" id="available-pieces">
         <div class="cell"
-          v-for="(piece, index) in availablePieces"
+          v-for="(piece, index) in gameState.availablePieces"
           :key="index"
-          @click="choosePiece(index)"
-          :style="cellBackgroundStyle(false, index)"
+          @click="eventChoosePiece(index)"
+          :style="styleCellBackground(false, index)"
         >
           <img v-if="piece" :src="image(piece)" />
         </div>
